@@ -9,6 +9,7 @@
   },
   "devDependencies": {
     "@types/bun": "latest",
+    "@types/cookie-parser": "^1.4.10",
     "@types/express": "^5.0.6",
     "@types/node": "^25.0.9",
     "@types/passport": "^1.0.17",
@@ -33,15 +34,18 @@
     "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-express": "^11.1.12",
     "@nestjs/throttler": "^6.5.0",
+    "cookie-parser": "^1.4.7",
     "dotenv": "^17.2.3",
     "drizzle-orm": "^0.45.1",
     "express": "^5.2.1",
     "graphql": "^16.12.0",
+    "graphql-scalars": "^1.25.0",
     "passport": "^0.7.0",
     "passport-facebook": "^3.0.0",
     "passport-google-oauth20": "^2.0.0",
     "passport-jwt": "^4.0.1",
     "pg": "^8.17.1",
-    "postgres": "^3.4.8"
+    "postgres": "^3.4.8",
+    "zod": "^4.3.6"
   }
 }
