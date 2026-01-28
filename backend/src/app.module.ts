@@ -1,0 +1,23 @@
+import { Module } from "@nestjs/common";
+import { ConfigModule } from "@nestjs/config";
+import { GraphQLModule } from "@nestjs/graphql";
+import { ApolloDriver, type ApolloDriverConfig } from "@nestjs/apollo";
+import { AppResolver } from "./app.resolver";
+import { AuthModule } from "./modules/auth/auth.module";
+
+@Module({
+  imports: [
+    ConfigModule.forRoot<ApolloDriverConfig>({
+      isGlobal: true,
+    }),
+    GraphQLModule.forRoot({
+      driver: ApolloDriver,
+      autoSchemaFile: true,
+      playground: true,
+      context: ({ req, res }) => ({ req, res }),
+    }),
+    AuthModule,
+  ],
+  providers: [AppResolver],
+})
+export class AppModule {}
