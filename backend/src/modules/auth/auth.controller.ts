@@ -36,6 +36,8 @@ export class AuthController {
     const user = await this.authService.validateOAuthUser(req.user);
     const { accessToken } = await this.authService.login(user);
 
+    console.log("Access token: ", accessToken);
+
     //set cookie
     this.setAuthCookie(res, accessToken);
 

@@ -15,6 +15,20 @@
       "when": 1768933148038,
       "tag": "0001_funny_ultimatum",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1769790074730,
+      "tag": "0002_wise_doctor_faustus",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1769794539264,
+      "tag": "0003_tan_ricochet",
+      "breakpoints": true
     }
   ]
 }

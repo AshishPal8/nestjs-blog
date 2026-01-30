@@ -1,0 +1,1 @@
+ALTER TABLE "posts" ADD COLUMN "meta_description" varchar(500) NOT NULL;

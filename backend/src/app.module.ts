@@ -6,6 +6,8 @@ import { AppResolver } from "./app.resolver";
 import { AuthModule } from "./modules/auth/auth.module";
 import { JwtModule } from "@nestjs/jwt";
 import { envConfig } from "@config/env.config";
+import { PostsModule } from "@modules/posts/posts.module";
+import { AuthMiddleware } from "@common/middleware/auth.middleware";
 
 @Module({
   imports: [
@@ -26,7 +28,12 @@ import { envConfig } from "@config/env.config";
       context: ({ req, res }) => ({ req, res }),
     }),
     AuthModule,
+    PostsModule,
   ],
   providers: [AppResolver],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(AuthMiddleware).forRoutes("graphql");
+  }
+}

@@ -23,6 +23,8 @@ export const posts = pgTable("posts", {
     .references(() => users.id)
     .notNull(),
 
+  metaDescription: varchar("meta_description", { length: 500 }).notNull(),
+
   isActive: boolean("is_active").default(true).notNull(),
   isDeleted: boolean("is_deleted").default(false).notNull(),
 
