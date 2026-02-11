@@ -1,5 +1,5 @@
 "use client";
-import { Facebook, Google } from "@/src/assets";
+import { Facebook, Google, LoginBg } from "@/src/assets";
 import { Button } from "@/src/components/ui/button";
 import {
   Card,
@@ -22,11 +22,21 @@ const LoginPage = () => {
 
   return (
     <div className="w-full h-screen flex justify-center items-center px-5 sm:px-0">
-      <Card className="w-full sm:w-6/8 md:w-4/8 lg:w-3/8 xl:w-2/8">
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold">Welcome Back!</CardTitle>
-          <CardDescription className="text-neutral-600">
-            Log in to access your personalized content.
+      <Card className="w-full sm:w-6/8 md:w-4/8 lg:w-3/8 xl:w-2/8 py-0 overflow-hidden rounded-3xl">
+        <div className="relative w-full h-48">
+          <Image
+            src={LoginBg}
+            alt="Logo"
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-linear-to-t from-white via-white/80 to-transparent" />
+        </div>
+        <CardHeader className="">
+          <CardTitle className="text-primary text-2xl font-extrabold">
+            Share Your Voice.
+          </CardTitle>
+          <CardDescription>
+            Join the community of thinkers and creators today.
           </CardDescription>
         </CardHeader>
         <CardContent>
