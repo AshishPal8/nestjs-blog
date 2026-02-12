@@ -7,10 +7,13 @@ import {
   DropdownMenuTrigger,
 } from "@/src/components/ui/dropdown-menu";
 import { Button } from "../ui/button";
-import { LayoutDashboard, Menu } from "lucide-react";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { useAuthStore } from "@/src/store/auth-store";
+import { Menu } from "lucide-react";
+import { useMutation } from "@apollo/client/react";
+import { api } from "@/src/lib/axios";
+import { useRouter } from "next/navigation";
 
 interface UserDropdownProps {
   isMenuOpen: boolean;
@@ -18,14 +21,36 @@ interface UserDropdownProps {
 }
 
 function UserDropdown({ isMenuOpen, setIsMenuOpen }: UserDropdownProps) {
-  const { user } = useAuthStore();
+  const router = useRouter();
+  const { user, logout } = useAuthStore();
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const displayUser = mounted ? user : null;
+
+  const handleLogout = async () => {
+    try {
+      await api.post("/auth/logout");
+      logout();
+      router.push("/");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
 
   return (
     <div className="flex items-center space-x-6">
-      {user ? (
+      {displayUser ? (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="rounded-full">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="rounded-full cursor-pointer"
+            >
               <Avatar className="w-10 h-10">
                 <AvatarImage
                   src={user?.avatar || ""}
@@ -51,7 +76,7 @@ function UserDropdown({ isMenuOpen, setIsMenuOpen }: UserDropdownProps) {
               </Link>
             </DropdownMenuItem> */}
 
-            <DropdownMenuItem onClick={() => {}} className="cursor-pointer">
+            <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">
               Sign Out
             </DropdownMenuItem>
           </DropdownMenuContent>

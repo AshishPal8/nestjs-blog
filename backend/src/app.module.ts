@@ -8,6 +8,7 @@ import { JwtModule } from "@nestjs/jwt";
 import { envConfig } from "@config/env.config";
 import { PostsModule } from "@modules/posts/posts.module";
 import { AuthMiddleware } from "@common/middleware/auth.middleware";
+import { CategoriesModule } from "@modules/categories/categories.module";
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { AuthMiddleware } from "@common/middleware/auth.middleware";
     }),
     AuthModule,
     PostsModule,
+    CategoriesModule,
   ],
   providers: [AppResolver],
 })

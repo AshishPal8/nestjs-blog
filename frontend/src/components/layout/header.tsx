@@ -5,13 +5,20 @@ import { Icons } from "../shared/icons";
 import { useLoginModal } from "@/src/store/useLoginModal";
 import { useAuthStore } from "@/src/store/auth-store";
 import UserDropdown from "./user-dropdown";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import MobileMenu from "./mobile-menu";
 
 const Header = () => {
   const loginModal = useLoginModal();
-  const isAuthenticated = useAuthStore().isAuthenticated();
+  const authStore = useAuthStore();
+  const [mounted, setMounted] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const isAuthenticated = mounted ? authStore.isAuthenticated() : false;
 
   return (
     <div className="w-full px-0 sm:px-5 md:px-10 lg:px-16 py-3 flex items-center justify-between border-b border-gray-200">

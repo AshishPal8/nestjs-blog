@@ -10,6 +10,10 @@ dist
 coverage
 *.lcov
 
+# changes
+changes.txt
+.changes.txt
+
 # logs
 logs
 _.log
