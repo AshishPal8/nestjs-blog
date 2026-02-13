@@ -63,7 +63,7 @@ const LoginModal = () => {
               (window.location.href = `${envConfig.apiUrl}/auth/google`)
             }
             size="lg"
-            className="w-full gap-3 h-12"
+            className="w-full gap-3 h-12 cursor-pointer"
           >
             <Image src={Google} alt="Google" width={22} height={22} />
             Continue with Google
@@ -74,7 +74,7 @@ const LoginModal = () => {
             onClick={() =>
               (window.location.href = `${envConfig.apiUrl}/auth/facebook`)
             }
-            className="w-full gap-3 h-12"
+            className="w-full gap-3 h-12 cursor-pointer"
           >
             <Image src={Facebook} alt="Facebook" width={22} height={22} />
             Continue with Facebook

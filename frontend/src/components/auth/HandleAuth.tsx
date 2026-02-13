@@ -8,15 +8,18 @@ export const HandleAuth = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
-  const setAuth = useAuthStore((state) => state.setAuth);
+  const { setAuth } = useAuthStore();
 
   useEffect(() => {
     const token = searchParams.get("token");
     const userParam = searchParams.get("user");
 
-    if (token && userParam) {
+    if (token && userParam && typeof setAuth === "function") {
       try {
         const user = JSON.parse(decodeURIComponent(userParam));
+
+        console.log("user", user);
+        console.log("token", token);
 
         setAuth(token, user);
 

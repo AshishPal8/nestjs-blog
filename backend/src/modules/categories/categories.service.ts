@@ -6,7 +6,7 @@ import {
 import { SlugUtil } from "@common/utils/slug.util";
 import { db } from "@database/db";
 import { categories } from "@database/schema/categories.schema";
-import { and, eq } from "drizzle-orm";
+import { and, count, eq, ilike } from "drizzle-orm";
 import {
   ConflictError,
   NotFoundError,
@@ -15,6 +15,11 @@ import {
   UpdateCategoryDto,
   updateCategorySchema,
 } from "./dto/update-category.input";
+import {
+  PaginationDto,
+  PaginationInput,
+  paginationSchema,
+} from "@common/dto/pagination.input";
 
 @Injectable()
 export class CategoriesService {
@@ -51,6 +56,52 @@ export class CategoriesService {
       .select()
       .from(categories)
       .where(eq(categories.isDeleted, false));
+  }
+
+  async findAllWithPagination(paginationInput: PaginationInput) {
+    const validated = paginationSchema.parse(paginationInput);
+
+    const { page, limit, search } = validated;
+
+    const offset = (page - 1) * limit;
+
+    const filters = [
+      eq(categories.isActive, true),
+      eq(categories.isDeleted, false),
+    ];
+
+    if (search) {
+      filters.push(ilike(categories.name, `%${search}%`));
+    }
+
+    const whereClause = and(...filters);
+
+    const [{ value: total }] = await db
+      .select({ value: count() })
+      .from(categories)
+      .where(whereClause);
+
+    const data = await db
+      .select()
+      .from(categories)
+      .where(whereClause)
+      .orderBy(categories.name)
+      .limit(limit)
+      .offset(offset);
+
+    const totalPages = Math.ceil(total / limit);
+
+    return {
+      data,
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages,
+        hasNext: page < totalPages,
+        hasPrev: page > 1,
+      },
+    };
   }
 
   async findActive() {

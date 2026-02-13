@@ -1,3 +1,4 @@
+import { PaginationMeta } from "@common/dto/pagination.output";
 import { Field, Int, ObjectType } from "@nestjs/graphql";
 
 @ObjectType()
@@ -22,4 +23,13 @@ export class CategoryOutput {
 
   @Field(() => Date)
   updatedAt: Date;
+}
+
+@ObjectType()
+export class PaginatedCategoryResponse {
+  @Field(() => [CategoryOutput])
+  data: CategoryOutput[];
+
+  @Field(() => PaginationMeta)
+  meta: PaginationMeta;
 }

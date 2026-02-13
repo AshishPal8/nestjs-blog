@@ -5,20 +5,18 @@ import { Icons } from "../shared/icons";
 import { useLoginModal } from "@/src/store/useLoginModal";
 import { useAuthStore } from "@/src/store/auth-store";
 import UserDropdown from "./user-dropdown";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import MobileMenu from "./mobile-menu";
 
 const Header = () => {
   const loginModal = useLoginModal();
-  const authStore = useAuthStore();
-  const [mounted, setMounted] = useState(false);
+  const user = useAuthStore((state) => state.user);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
-
-  const isAuthenticated = mounted ? authStore.isAuthenticated() : false;
 
   return (
     <div className="w-full px-0 sm:px-5 md:px-10 lg:px-16 py-3 flex items-center justify-between border-b border-gray-200">
@@ -35,7 +33,10 @@ const Header = () => {
         </div>
       </div>
       <div className="items-center gap-2 hidden sm:flex">
-        {isAuthenticated ? (
+        {!mounted ? (
+          // Show placeholder during SSR
+          <div className="h-10 w-24 bg-gray-100 animate-pulse rounded-md" />
+        ) : user ? (
           <UserDropdown isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} />
         ) : (
           <Button

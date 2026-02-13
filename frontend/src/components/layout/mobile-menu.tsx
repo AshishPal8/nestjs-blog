@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Sheet,
   SheetClose,
@@ -17,8 +17,13 @@ import { PlaceholderImg } from "@/src/assets";
 import { useLoginModal } from "@/src/store/useLoginModal";
 
 const MobileMenu = () => {
-  const { user, isAuthenticated, logout } = useAuthStore();
+  const { user, logout } = useAuthStore();
   const loginModal = useLoginModal();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
     <Sheet>
@@ -44,7 +49,7 @@ const MobileMenu = () => {
           <SheetTitle className="text-base capitalize font-extrabold text-primary">
             {user?.name || "Hello Guest!"}
           </SheetTitle>
-          {!isAuthenticated() && (
+          {!user && (
             <SheetClose asChild>
               <Button
                 size={"sm"}
@@ -71,7 +76,7 @@ const MobileMenu = () => {
             <Icons.search className="size-5" /> Explore
           </Button>
 
-          {isAuthenticated() && (
+          {user && (
             <>
               <div className="h-px bg-gray-100 my-2" />
               <Button
@@ -91,7 +96,10 @@ const MobileMenu = () => {
         </div>
 
         <div className="p-4 border-t mt-auto">
-          {isAuthenticated() ? (
+          {!mounted ? (
+            // Show placeholder during SSR
+            <div className="h-10 w-24 bg-gray-100 animate-pulse rounded-md" />
+          ) : user ? (
             <Button
               variant="destructive"
               className="w-full justify-start gap-4"
