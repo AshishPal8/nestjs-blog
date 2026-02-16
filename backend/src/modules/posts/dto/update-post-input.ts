@@ -1,7 +1,7 @@
 import { Field, InputType } from "@nestjs/graphql";
 import { z } from "zod";
 
-export const createPostSchema = z.object({
+export const updatePostSchema = z.object({
   title: z.string().min(3, "Title must be at least 3 characters").max(255),
   description: z.string().min(10, "Description must be at least 10 characters"),
   imageIds: z.array(z.number()).optional(),
@@ -15,12 +15,13 @@ export const createPostSchema = z.object({
     .max(10, "Maximum 10 tags allowed")
     .optional(),
   categoryIds: z.array(z.number()).min(1, "At least one category is required"),
+  isActive: z.boolean().optional(),
 });
 
-export type CreatePostDto = z.infer<typeof createPostSchema>;
+export type UpdatePostDto = z.infer<typeof updatePostSchema>;
 
 @InputType()
-export class CreatePostInput {
+export class UpdatePostInput {
   @Field()
   title: string;
 

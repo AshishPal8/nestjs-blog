@@ -23,4 +23,10 @@ export const envConfig = {
     appSecret: process.env.FACEBOOK_APP_SECRET!,
     callbackUrl: process.env.FACEBOOK_CALLBACK_URL!,
   },
+
+  imagekit: {
+    urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT!,
+    publicKey: process.env.IMAGEKIT_PUBLIC_KEY!,
+    privateKey: process.env.IMAGEKIT_PRIVATE_KEY!,
+  },
 };

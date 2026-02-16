@@ -17,7 +17,7 @@ export const posts = pgTable("posts", {
 
   description: text("description").notNull(),
 
-  image: varchar("image", { length: 500 }),
+  imageIds: integer("image_ids").array().notNull(),
 
   authorId: integer("author_id")
     .references(() => users.id)
