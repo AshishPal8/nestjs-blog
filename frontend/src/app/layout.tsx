@@ -5,6 +5,7 @@ import ApolloClientProvider from "../providers/apollo-provider";
 import { Suspense } from "react";
 import { HandleAuth } from "../components/auth/HandleAuth";
 import LoginModal from "../modal/login-modal";
+import { AuthModalTrigger } from "../components/auth/AuthModalTrigger";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,6 +35,7 @@ export default function RootLayout({
         <ApolloClientProvider>
           <Suspense fallback={null}>
             <HandleAuth />
+            <AuthModalTrigger />
           </Suspense>
           <LoginModal />
           {children}

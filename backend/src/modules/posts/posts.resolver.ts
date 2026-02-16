@@ -3,10 +3,10 @@ import { PostsService } from "./posts.service";
 import { PostOutput } from "./dto/post.output";
 import { UseGuards } from "@nestjs/common";
 import { GqlAuthGuard } from "@modules/auth/guards/gql-auth.guard";
-import { CreatePostInput } from "./dto/create-post.input";
 import { PaginatedPostsOutput } from "./dto/paginated-posts.output";
 import { PaginationInput } from "@common/dto/pagination.input";
 import { UpdatePostInput } from "./dto/update-post-input";
+import { CreatePostInput } from "./dto/create-post.input";
 
 @Resolver(() => PostOutput)
 export class PostsResolver {

@@ -1,4 +1,4 @@
-import { Field, InputType } from "@nestjs/graphql";
+import { Field, InputType, Int } from "@nestjs/graphql";
 import { z } from "zod";
 
 export const updatePostSchema = z.object({
@@ -28,7 +28,7 @@ export class UpdatePostInput {
   @Field()
   description: string;
 
-  @Field({ nullable: true })
+  @Field(() => [Int], { nullable: true })
   imageIds?: number[];
 
   @Field()
@@ -37,6 +37,6 @@ export class UpdatePostInput {
   @Field(() => [String], { nullable: true })
   tags?: string[];
 
-  @Field(() => [Number])
+  @Field(() => [Int])
   categoryIds: number[];
 }

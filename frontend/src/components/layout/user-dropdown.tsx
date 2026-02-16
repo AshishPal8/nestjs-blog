@@ -10,7 +10,7 @@ import { Button } from "../ui/button";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { useAuthStore } from "@/src/store/auth-store";
-import { Menu } from "lucide-react";
+import { LayoutDashboard, Menu } from "lucide-react";
 import { useMutation } from "@apollo/client/react";
 import { api } from "@/src/lib/axios";
 import { useRouter } from "next/navigation";
@@ -66,7 +66,7 @@ function UserDropdown({ isMenuOpen, setIsMenuOpen }: UserDropdownProps) {
             {/* <Link href={`/profile/${user?.name}`} className="cursor-pointer"> */}
             <DropdownMenuItem>{user?.name}</DropdownMenuItem>
             {/* </Link> */}
-            {/* <DropdownMenuItem asChild>
+            <DropdownMenuItem asChild>
               <Link
                 href="/dashboard"
                 className="flex items-center cursor-pointer"
@@ -74,7 +74,7 @@ function UserDropdown({ isMenuOpen, setIsMenuOpen }: UserDropdownProps) {
                 <LayoutDashboard className="h-4 w-4 mr-2" />
                 Dashboard
               </Link>
-            </DropdownMenuItem> */}
+            </DropdownMenuItem>
 
             <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">
               Sign Out

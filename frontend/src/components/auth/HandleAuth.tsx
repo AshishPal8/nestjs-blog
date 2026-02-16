@@ -18,12 +18,16 @@ export const HandleAuth = () => {
       try {
         const user = JSON.parse(decodeURIComponent(userParam));
 
-        console.log("user", user);
-        console.log("token", token);
-
         setAuth(token, user);
 
-        router.replace(pathname);
+        const redirect = localStorage.getItem("redirectAfterLogin");
+
+        if (redirect) {
+          localStorage.removeItem("redirectAfterLogin");
+          router.push(redirect);
+        } else {
+          router.push("/");
+        }
       } catch (error) {
         console.error("Failed to parse user from OAuth redirect", error);
       }
