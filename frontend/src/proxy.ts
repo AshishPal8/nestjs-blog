@@ -15,7 +15,6 @@ export async function proxy(request: NextRequest) {
 
   const routeType = getRouteType(pathname);
   const token = request.cookies.get("auth_token")?.value;
-  console.log("token", token);
 
   if (routeType === "public") {
     return NextResponse.next();
@@ -33,7 +32,6 @@ export async function proxy(request: NextRequest) {
 
   if (routeType === "protected" || routeType === "admin") {
     if (!token) {
-      console.log("protected", token);
       const url = new URL("/", request.url);
       url.searchParams.set("login", "required");
       url.searchParams.set("redirect", pathname);
@@ -41,8 +39,6 @@ export async function proxy(request: NextRequest) {
     }
 
     const payload = await verifyToken(token);
-
-    console.log("payload", payload);
 
     if (!payload) {
       const url = new URL("/", request.url);
@@ -52,7 +48,6 @@ export async function proxy(request: NextRequest) {
     }
     if (routeType === "admin") {
       const userRole = payload.role as string;
-      console.log("userRole", userRole);
       if (userRole !== "admin") {
         const url = new URL("/", request.url);
         url.searchParams.set("error", "unauthorized");
