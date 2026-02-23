@@ -1,4 +1,26 @@
 import { Field, Int, ObjectType } from "@nestjs/graphql";
+import { CategoryOutput } from "@modules/categories/dto/category.output";
+
+@ObjectType()
+export class TagOutput {
+  @Field(() => Int)
+  id: number;
+
+  @Field()
+  name: string;
+
+  @Field()
+  slug: string;
+}
+
+@ObjectType()
+export class ImageOutput {
+  @Field(() => Int)
+  id: number;
+
+  @Field()
+  url: string;
+}
 
 @ObjectType()
 export class PostOutput {
@@ -17,17 +39,14 @@ export class PostOutput {
   @Field()
   metaDescription: string;
 
-  @Field({ nullable: true })
-  image?: string;
+  @Field(() => [CategoryOutput], { nullable: true })
+  categories?: CategoryOutput[];
 
-  @Field(() => [String], { nullable: true })
-  tags?: string[];
+  @Field(() => [TagOutput], { nullable: true })
+  tags?: TagOutput[];
 
-  @Field(() => Int)
-  authorId: number;
-
-  @Field()
-  isActive: boolean;
+  @Field(() => [ImageOutput], { nullable: true })
+  images?: ImageOutput[];
 
   @Field()
   createdAt: Date;

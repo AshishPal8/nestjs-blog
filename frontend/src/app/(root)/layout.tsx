@@ -1,3 +1,4 @@
+import CategoryStrip from "@/src/components/home/category-strip";
 import Header from "@/src/components/layout/header";
 
 export default function RootLayout({
@@ -8,6 +9,7 @@ export default function RootLayout({
   return (
     <main className="min-h-screen">
       <Header />
+      <CategoryStrip />
       {children}
     </main>
   );

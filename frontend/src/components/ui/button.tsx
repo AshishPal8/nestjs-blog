@@ -40,6 +40,7 @@ function Button({
   className,
   variant = "default",
   size = "default",
+  type = "button",
   asChild = false,
   ...props
 }: React.ComponentProps<"button"> &
@@ -50,6 +51,7 @@ function Button({
 
   return (
     <Comp
+      type={type}
       data-slot="button"
       data-variant={variant}
       data-size={size}

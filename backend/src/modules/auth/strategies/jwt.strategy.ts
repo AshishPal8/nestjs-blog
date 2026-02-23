@@ -5,7 +5,7 @@ import { ExtractJwt, Strategy } from "passport-jwt";
 
 const cookieExtractor = (req: any) => {
   if (req?.cookies?.auth_token) {
-    return req.cookies.auth_token; // ⭐ your cookie name
+    return req.cookies.auth_token;
   }
   return null;
 };
@@ -25,7 +25,7 @@ export class jwtStrategy extends PassportStrategy(Strategy) {
 
   async validate(payload: any) {
     return {
-      id: payload.sub,
+      id: payload.id,
       email: payload.email,
       role: payload.role,
     };

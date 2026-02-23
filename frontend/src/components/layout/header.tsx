@@ -7,6 +7,7 @@ import { useAuthStore } from "@/src/store/auth-store";
 import UserDropdown from "./user-dropdown";
 import { useEffect, useState } from "react";
 import MobileMenu from "./mobile-menu";
+import CreatePostModal from "@/src/modal/create-post";
 
 const Header = () => {
   const loginModal = useLoginModal();
@@ -33,8 +34,8 @@ const Header = () => {
         </div>
       </div>
       <div className="items-center gap-2 hidden sm:flex">
+        <CreatePostModal />
         {!mounted ? (
-          // Show placeholder during SSR
           <div className="h-10 w-24 bg-gray-100 animate-pulse rounded-md" />
         ) : user ? (
           <UserDropdown isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} />

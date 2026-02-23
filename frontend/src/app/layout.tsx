@@ -6,6 +6,7 @@ import { Suspense } from "react";
 import { HandleAuth } from "../components/auth/HandleAuth";
 import LoginModal from "../modal/login-modal";
 import { AuthModalTrigger } from "../components/auth/AuthModalTrigger";
+import { Toaster } from "sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -39,6 +40,7 @@ export default function RootLayout({
           </Suspense>
           <LoginModal />
           {children}
+          <Toaster richColors position="top-center" />
         </ApolloClientProvider>
       </body>
     </html>

@@ -9,6 +9,7 @@ import { envConfig } from "@config/env.config";
 import { PostsModule } from "@modules/posts/posts.module";
 import { AuthMiddleware } from "@common/middleware/auth.middleware";
 import { CategoriesModule } from "@modules/categories/categories.module";
+import { UploadModule } from "@modules/uploads/upload.module";
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { CategoriesModule } from "@modules/categories/categories.module";
     AuthModule,
     PostsModule,
     CategoriesModule,
+    UploadModule,
   ],
   providers: [AppResolver],
 })

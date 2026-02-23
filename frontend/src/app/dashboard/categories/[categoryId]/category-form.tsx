@@ -28,7 +28,7 @@ import {
   DELETE_CATEGORY,
   UPDATE_CATEGORY,
 } from "@/src/graphql/mutations/categories";
-import { handleError } from "@/src/lib/handleError";
+import { handleGraphqlError } from "@/src/lib/errors/handleGraphqlErrors";
 
 const formSchema = z.object({
   name: z.string().min(1, "Category name is required"),
@@ -139,8 +139,8 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({ initialData }) => {
           },
         });
       }
-    } catch (error: any) {
-      handleError(error);
+    } catch (error) {
+      handleGraphqlError(error);
     } finally {
       setSubmitted(false);
     }
@@ -154,7 +154,7 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({ initialData }) => {
         },
       });
     } catch (error) {
-      handleError(error);
+      handleGraphqlError(error);
     } finally {
       setOpen(false);
     }

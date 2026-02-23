@@ -37,3 +37,13 @@ export const GET_CATEGORY_BY_ID = gql`
     }
   }
 `;
+
+export const GET_ACTIVE_CATEGORIES = gql`
+  query GetActiveCategories {
+    activeCategories {
+      id
+      name
+      slug
+    }
+  }
+`;

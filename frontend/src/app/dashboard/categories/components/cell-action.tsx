@@ -18,7 +18,7 @@ import { useState } from "react";
 import AlertModal from "@/src/modal/alert-modal";
 import { useMutation } from "@apollo/client/react";
 import { DELETE_CATEGORY } from "@/src/graphql/mutations/categories";
-import { handleError } from "@/src/lib/handleError";
+import { handleError } from "@/src/lib/errors/handleError";
 
 interface CellActionProps {
   data: CategoryColumn;

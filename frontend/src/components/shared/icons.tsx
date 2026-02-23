@@ -3,6 +3,7 @@ import {
   LogIn,
   LogOut,
   Menu,
+  Plus,
   Search,
   Settings,
   User,
@@ -21,6 +22,7 @@ export const Icons = {
   home: Home,
   settings: Settings,
   user: User,
+  plus: Plus,
 
   logo: ({ className, ...props }: LucideProps) => (
     <svg
