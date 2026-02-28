@@ -8,6 +8,9 @@ import Link from "next/link";
 const CategoryStrip = () => {
   const { data: categoriesData } = useQuery<ActiveCategoriesData>(
     GET_ACTIVE_CATEGORIES,
+    {
+      fetchPolicy: "cache-first",
+    },
   );
   const activeCategories = categoriesData?.activeCategories;
 

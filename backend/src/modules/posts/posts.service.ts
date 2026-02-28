@@ -266,14 +266,18 @@ export class PostsService {
 
   async findAll(pagination: PaginationDto) {
     const validated = paginationSchema.parse(pagination);
-    const { page, limit, search } = validated;
+    const { page, limit, search, isActive } = validated;
 
     const offset = (page - 1) * limit;
 
-    const filters = [eq(posts.isDeleted, false), eq(posts.isActive, true)];
+    const filters = [eq(posts.isDeleted, false)];
 
     if (search) {
       filters.push(ilike(posts.title, `%${search}%`));
+    }
+
+    if (isActive !== undefined) {
+      filters.push(eq(posts.isActive, isActive));
     }
 
     const whereClause = and(...filters);
