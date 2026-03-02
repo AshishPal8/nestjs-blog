@@ -1,4 +1,5 @@
 import Feed from "@/src/components/home/feed";
+import FeedLayout from "@/src/components/shared/FeedLayout";
 import { GET_POSTS } from "@/src/graphql/queries/posts";
 import { getClient } from "@/src/lib/apollo-server-client";
 import { PostsData } from "@/src/types/post.types";
@@ -10,8 +11,8 @@ export default async function Home() {
   });
 
   return (
-    <div className="flex min-h-[calc(100vh-4rem)] justify-center">
+    <FeedLayout>
       <Feed initialData={data} />
-    </div>
+    </FeedLayout>
   );
 }

@@ -57,7 +57,7 @@ const Feed = ({ initialData }: { initialData: PostsData }) => {
   }, [loadMore]);
 
   return (
-    <div className="w-full max-w-2xl mx-auto">
+    <div className="w-full max-w-2xl mx-auto bg-white">
       {posts.map((post) => (
         <FeedCard key={post.id} post={post} />
       ))}
@@ -73,6 +73,13 @@ const Feed = ({ initialData }: { initialData: PostsData }) => {
           You&apos;re all caught up
         </p>
       )}
+
+      {!posts ||
+        (posts.length === 0 && (
+          <p className="text-center text-sm text-muted-foreground py-4">
+            No posts found
+          </p>
+        ))}
     </div>
   );
 };

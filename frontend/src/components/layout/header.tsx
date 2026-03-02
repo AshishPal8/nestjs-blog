@@ -29,7 +29,7 @@ const Header = () => {
           <Icons.search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
           <Input
             placeholder="Search .."
-            className="w-96 rounded-full text-lg py-2 px-4 border focus-visible:ring-0 focus-visible:border-primary pl-10"
+            className="w-full sm:w-96 rounded-full text-lg py-2 px-4 border focus-visible:ring-0 focus-visible:border-primary pl-10"
           />
         </div>
       </div>

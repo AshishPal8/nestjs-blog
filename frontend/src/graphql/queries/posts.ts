@@ -35,3 +35,30 @@ export const GET_POSTS = gql`
     }
   }
 `;
+
+export const GET_POST_BY_SLUG = gql`
+  query GetPostBySlug($slug: String!) {
+    postBySlug(slug: $slug) {
+      id
+      title
+      slug
+      description
+      metaDescription
+      createdAt
+      categories {
+        id
+        name
+        slug
+      }
+      tags {
+        id
+        name
+        slug
+      }
+      images {
+        id
+        url
+      }
+    }
+  }
+`;

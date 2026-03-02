@@ -1,4 +1,5 @@
 import {
+  ChevronDown,
   Home,
   LogIn,
   LogOut,
@@ -23,6 +24,7 @@ export const Icons = {
   settings: Settings,
   user: User,
   plus: Plus,
+  chevronDown: ChevronDown,
 
   logo: ({ className, ...props }: LucideProps) => (
     <svg

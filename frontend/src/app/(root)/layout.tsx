@@ -1,20 +1,24 @@
 import CategoryStrip from "@/src/components/home/category-strip";
 import Header from "@/src/components/layout/header";
+import { GET_ACTIVE_CATEGORIES } from "@/src/graphql/queries/categories";
+import { getClient } from "@/src/lib/apollo-server-client";
+import { ActiveCategoriesData } from "@/src/types/category.types";
 
 export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const { data } = await getClient().query<ActiveCategoriesData>({
+    query: GET_ACTIVE_CATEGORIES,
+  });
   return (
     <main className="min-h-screen">
-      <Header />
-      <CategoryStrip />
-      <div className="flex">
-        <div className="w-1/3 bg-gray-200"></div>
-        <div className="w-1/3">{children}</div>
-        <div className="w-1/3 bg-gray-200"></div>
-      </div>
+      <header className="sticky top-0 z-50 bg-white">
+        <Header />
+        <CategoryStrip categories={data?.activeCategories ?? []} />
+      </header>
+      {children}
     </main>
   );
 }
