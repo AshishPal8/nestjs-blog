@@ -8,6 +8,7 @@ export interface Post {
   categories: { id: number; name: string; slug: string }[];
   tags: { id: number; name: string; slug: string }[];
   images: { id: number; url: string }[];
+  author?: { id: number; name: string; email: string; avatar: string };
 }
 
 export interface PostsData {

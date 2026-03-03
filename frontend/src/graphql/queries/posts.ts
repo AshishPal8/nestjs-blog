@@ -14,6 +14,12 @@ export const GET_POSTS = gql`
           name
           slug
         }
+        author {
+          id
+          name
+          avatar
+          email
+        }
         tags {
           id
           name
@@ -49,6 +55,12 @@ export const GET_POST_BY_SLUG = gql`
         id
         name
         slug
+      }
+      author {
+        id
+        name
+        avatar
+        email
       }
       tags {
         id

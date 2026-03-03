@@ -3,6 +3,7 @@ import { GET_POST_BY_SLUG } from "@/src/graphql/queries/posts";
 import { getClient } from "@/src/lib/apollo-server-client";
 import { Post } from "@/src/types/post.types";
 import { notFound } from "next/navigation";
+import PostComp from "./components/post-comp";
 
 const PostPage = async ({ params }: { params: Promise<{ slug: string }> }) => {
   const slug = (await params).slug;
@@ -18,7 +19,9 @@ const PostPage = async ({ params }: { params: Promise<{ slug: string }> }) => {
 
   return (
     <FeedLayout>
-      <div>{post.title}</div>
+      <div className="w-full mx-auto bg-white rounded-md">
+        <PostComp post={post} />
+      </div>
     </FeedLayout>
   );
 };

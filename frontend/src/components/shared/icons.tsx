@@ -1,11 +1,17 @@
 import {
+  ArrowBigUp,
+  ArrowLeft,
+  Bookmark,
   ChevronDown,
+  EllipsisVertical,
   Home,
   LogIn,
   LogOut,
   Menu,
+  MessageSquareText,
   Plus,
   Search,
+  Send,
   Settings,
   User,
   type LucideIcon,
@@ -25,6 +31,12 @@ export const Icons = {
   user: User,
   plus: Plus,
   chevronDown: ChevronDown,
+  ellipsisVertical: EllipsisVertical,
+  like: ArrowBigUp,
+  comment: MessageSquareText,
+  share: Send,
+  bookmark: Bookmark,
+  arrowLeft: ArrowLeft,
 
   logo: ({ className, ...props }: LucideProps) => (
     <svg

@@ -17,6 +17,7 @@ import { categories } from "@database/schema/categories.schema";
 import { postCategories } from "@database/schema/post-categories";
 import { PaginationDto, paginationSchema } from "@common/dto/pagination.input";
 import { UpdatePostDto, updatePostSchema } from "./dto/update-post-input";
+import { users } from "@database/schema/user.schema";
 
 @Injectable()
 export class PostsService {
@@ -394,8 +395,26 @@ export class PostsService {
 
   private async getPostWithRelations(postId: number) {
     const [post] = await db
-      .select()
+      .select({
+        id: posts.id,
+        title: posts.title,
+        slug: posts.slug,
+        description: posts.description,
+        metaDescription: posts.metaDescription,
+        imageIds: posts.imageIds,
+        isActive: posts.isActive,
+        isDeleted: posts.isDeleted,
+        createdAt: posts.createdAt,
+        updatedAt: posts.updatedAt,
+        author: {
+          id: users.id,
+          name: users.name,
+          email: users.email,
+          avatar: users.avatar,
+        },
+      })
       .from(posts)
+      .leftJoin(users, eq(posts.authorId, users.id))
       .where(eq(posts.id, postId))
       .limit(1);
 

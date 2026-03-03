@@ -2,6 +2,21 @@ import { Field, Int, ObjectType } from "@nestjs/graphql";
 import { CategoryOutput } from "@modules/categories/dto/category.output";
 
 @ObjectType()
+export class AuthorOutput {
+  @Field(() => Int)
+  id: number;
+
+  @Field({ nullable: true })
+  name?: string;
+
+  @Field({ nullable: true })
+  avatar?: string;
+
+  @Field()
+  email: string;
+}
+
+@ObjectType()
 export class TagOutput {
   @Field(() => Int)
   id: number;
@@ -38,6 +53,9 @@ export class PostOutput {
 
   @Field()
   metaDescription: string;
+
+  @Field(() => AuthorOutput, { nullable: true })
+  author?: AuthorOutput;
 
   @Field(() => [CategoryOutput], { nullable: true })
   categories?: CategoryOutput[];

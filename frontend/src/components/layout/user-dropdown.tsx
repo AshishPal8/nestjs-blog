@@ -11,7 +11,6 @@ import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { useAuthStore } from "@/src/store/auth-store";
 import { LayoutDashboard, Menu } from "lucide-react";
-import { useMutation } from "@apollo/client/react";
 import { api } from "@/src/lib/axios";
 import { useRouter } from "next/navigation";
 
