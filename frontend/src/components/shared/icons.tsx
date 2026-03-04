@@ -1,8 +1,8 @@
 import {
-  ArrowBigUp,
   ArrowLeft,
   Bookmark,
   ChevronDown,
+  Copy,
   EllipsisVertical,
   Home,
   LogIn,
@@ -13,6 +13,7 @@ import {
   Search,
   Send,
   Settings,
+  ThumbsUp,
   User,
   type LucideIcon,
   type LucideProps,
@@ -32,11 +33,12 @@ export const Icons = {
   plus: Plus,
   chevronDown: ChevronDown,
   ellipsisVertical: EllipsisVertical,
-  like: ArrowBigUp,
+  like: ThumbsUp,
   comment: MessageSquareText,
   share: Send,
   bookmark: Bookmark,
   arrowLeft: ArrowLeft,
+  copy: Copy,
 
   logo: ({ className, ...props }: LucideProps) => (
     <svg

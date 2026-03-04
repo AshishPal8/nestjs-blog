@@ -86,9 +86,9 @@ function UserDropdown({ isMenuOpen, setIsMenuOpen }: UserDropdownProps) {
         </Button>
       )}
 
-      <button className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+      {/* <button className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
         <Menu className="h-6 w-6" />
-      </button>
+      </button> */}
     </div>
   );
 }

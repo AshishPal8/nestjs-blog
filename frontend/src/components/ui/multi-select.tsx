@@ -77,7 +77,6 @@ export function MultiSelect({
             className,
           )}
         >
-          {/* Selected badges */}
           <div className="flex flex-1 flex-wrap gap-1">
             {selectedLabels.length === 0 ? (
               <span className="text-muted-foreground">{placeholder}</span>
@@ -110,7 +109,6 @@ export function MultiSelect({
             )}
           </div>
 
-          {/* Right side: clear + chevron */}
           <div className="flex shrink-0 items-center gap-1">
             {value.length > 0 && (
               <span
@@ -140,10 +138,6 @@ export function MultiSelect({
           sideOffset={4}
           className={cn(
             "bg-popover text-popover-foreground z-50 min-w-(--radix-popover-trigger-width) rounded-md border shadow-md outline-none",
-            "data-[state=open]:animate-in data-[state=closed]:animate-out",
-            "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
-            "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
-            "data-[side=bottom]:slide-in-from-top-2",
           )}
         >
           {/* Search */}
@@ -160,8 +154,11 @@ export function MultiSelect({
             </div>
           </div>
 
-          {/* Options list */}
-          <div className="max-h-60 overflow-y-auto p-1">
+          {/* SCROLLABLE OPTIONS */}
+          <div
+            className="max-h-60 overflow-y-auto p-1 pointer-events-auto"
+            onWheel={(e) => e.stopPropagation()}
+          >
             {filtered.length === 0 ? (
               <p className="text-muted-foreground py-6 text-center text-sm">
                 No options found.
@@ -169,6 +166,7 @@ export function MultiSelect({
             ) : (
               filtered.map((opt) => {
                 const selected = value.includes(opt.value);
+
                 return (
                   <button
                     key={opt.value}
@@ -176,22 +174,22 @@ export function MultiSelect({
                     disabled={opt.disabled}
                     onClick={() => toggle(opt.value)}
                     className={cn(
-                      "focus:bg-accent focus:text-accent-foreground relative flex w-full cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none select-none",
+                      "focus:bg-accent focus:text-accent-foreground relative flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none select-none",
                       "hover:bg-accent hover:text-accent-foreground transition-colors",
                       "disabled:pointer-events-none disabled:opacity-50",
                       selected && "bg-accent/50",
                     )}
                   >
-                    {/* Checkbox */}
                     <span
                       className={cn(
-                        "border-input flex size-4 shrink-0 items-center justify-center rounded-sm border transition-colors",
+                        "border-input flex size-4 shrink-0 items-center justify-center rounded-sm border",
                         selected &&
                           "bg-primary border-primary text-primary-foreground",
                       )}
                     >
                       {selected && <CheckIcon className="size-3" />}
                     </span>
+
                     {opt.label}
                   </button>
                 );
@@ -199,9 +197,9 @@ export function MultiSelect({
             )}
           </div>
 
-          {/* Footer: select all / clear */}
+          {/* Footer */}
           {options.length > 0 && (
-            <div className="border-t px-2 py-1.5 flex items-center justify-between gap-2">
+            <div className="border-t px-2 py-1.5 flex items-center justify-between">
               <button
                 type="button"
                 onClick={() =>
@@ -209,14 +207,15 @@ export function MultiSelect({
                     options.filter((o) => !o.disabled).map((o) => o.value),
                   )
                 }
-                className="text-muted-foreground hover:text-foreground text-xs transition-colors"
+                className="text-muted-foreground hover:text-foreground text-xs"
               >
                 Select all
               </button>
+
               <button
                 type="button"
                 onClick={() => onValueChange?.([])}
-                className="text-muted-foreground hover:text-foreground text-xs transition-colors"
+                className="text-muted-foreground hover:text-foreground text-xs"
               >
                 Clear
               </button>

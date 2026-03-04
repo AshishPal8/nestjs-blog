@@ -16,12 +16,12 @@ import { GET_ACTIVE_CATEGORIES } from "@/src/graphql/queries/categories";
 const DRAFT_KEY = "create-post-draft";
 
 export default function CreatePostForm({ onClose }: { onClose?: () => void }) {
-  const getFirst50Words = (html: string): string => {
+  const getMetaDescription = (html: string): string => {
     const text = html
       .replace(/<[^>]*>/g, " ")
       .replace(/\s+/g, " ")
       .trim();
-    return text.split(" ").slice(0, 50).join(" ");
+    return text.slice(0, 255);
   };
 
   const getInitialDraft = () => {
@@ -41,11 +41,12 @@ export default function CreatePostForm({ onClose }: { onClose?: () => void }) {
     initialDraft?.formData || {
       title: "",
       description: "",
-      metaDescription: "",
       categoryIds: [] as number[],
       tags: [] as string[],
     },
   );
+
+  console.log("formData", formData);
 
   const [images, setImages] = useState<{ url: string; id: number }[]>(
     initialDraft?.images || [],
@@ -79,7 +80,6 @@ export default function CreatePostForm({ onClose }: { onClose?: () => void }) {
     setFormData({
       title: "",
       description: "",
-      metaDescription: "",
       categoryIds: [],
       tags: [],
     });
@@ -126,7 +126,7 @@ export default function CreatePostForm({ onClose }: { onClose?: () => void }) {
         input: {
           title: formData.title,
           description: formData.description,
-          metaDescription: formData.metaDescription,
+          metaDescription: getMetaDescription(formData.description),
           categoryIds: formData.categoryIds,
           tags: formData.tags,
           imageIds: imageIds,
@@ -173,7 +173,6 @@ export default function CreatePostForm({ onClose }: { onClose?: () => void }) {
           setFormData((prev) => ({
             ...prev,
             description: html,
-            metaDescription: getFirst50Words(html),
           }))
         }
       />

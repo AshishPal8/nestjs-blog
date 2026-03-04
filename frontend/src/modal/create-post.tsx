@@ -15,49 +15,28 @@ import {
   DrawerTitle,
 } from "../components/ui/drawer";
 import { Icons } from "../components/shared/icons";
-import { useMutation } from "@apollo/client/react";
-import { handleGraphqlError } from "../lib/errors/handleGraphqlErrors";
-import { CREATE_POST } from "../graphql/mutations/posts";
-import { toast } from "sonner";
 import CreatePostForm from "../components/editor/create-post-form";
+import { useAuthStore } from "../store/auth-store";
+import { useLoginModal } from "../store/useLoginModal";
+import { toast } from "sonner";
 
 const CreatePostModal = () => {
   const [isOpen, setIsOpen] = useState(false);
   const isDesktop = useMediaQuery("(min-width: 768px)");
+  const user = useAuthStore((state) => state.user);
+  const loginModal = useLoginModal();
 
-  const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    metaDescription: "",
-    categoryIds: [],
-    images: [],
-    tags: [],
-  });
-
-  const [createPost, { loading }] = useMutation(CREATE_POST, {
-    onCompleted: () => {
-      toast.success("Post created successfully!");
-      setIsOpen(false);
-      resetForm();
-    },
-    onError: (error) => {
-      handleGraphqlError(error);
-    },
-  });
-
-  const resetForm = () => {
-    setFormData({
-      title: "",
-      description: "",
-      metaDescription: "",
-      categoryIds: [],
-      images: [],
-      tags: [],
-    });
+  const handleCreatePost = () => {
+    if (!user) {
+      toast.error("Please login to create a post");
+      loginModal.onOpen();
+      return;
+    }
+    setIsOpen(true);
   };
 
   const Content = (
-    <div onSubmit={() => {}} className="p-6 space-y-6">
+    <div className="p-6 space-y-6">
       {isDesktop ? (
         <>
           <DialogTitle className="text-primary font-bold text-2xl mb-0">
@@ -81,20 +60,29 @@ const CreatePostModal = () => {
 
   return (
     <>
-      <Button onClick={() => setIsOpen(true)} className="cursor-pointer">
+      <Button onClick={handleCreatePost} className="cursor-pointer">
         <Icons.plus />
         Create
       </Button>
 
       {isDesktop ? (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
-          <DialogContent className="sm:max-w-[500px] p-0 overflow-hidden rounded-3xl">
-            {Content}
+          <DialogContent
+            className="sm:max-w-[500px] p-0 overflow-hidden rounded-3xl max-h-[95vh] flex flex-col"
+            onPointerDownOutside={(e) => e.preventDefault()}
+            onEscapeKeyDown={(e) => e.preventDefault()}
+          >
+            <div className="overflow-y-auto flex-1">{Content}</div>
           </DialogContent>
         </Dialog>
       ) : (
         <Drawer open={isOpen} onOpenChange={setIsOpen}>
-          <DrawerContent className="rounded-none">{Content}</DrawerContent>
+          <DrawerContent
+            className="rounded-none flex flex-col"
+            style={{ height: "100dvh" }}
+          >
+            <div className="overflow-y-auto flex-1">{Content}</div>
+          </DrawerContent>
         </Drawer>
       )}
     </>

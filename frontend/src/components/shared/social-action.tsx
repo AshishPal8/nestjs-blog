@@ -1,6 +1,10 @@
 import { Icons } from "./icons";
+import { useState } from "react";
+import ShareModal from "@/src/modal/share-modal";
 
 const SocialAction = () => {
+  const [open, setOpen] = useState(false);
+
   return (
     <div className="flex items-center justify-between mt-3">
       <div className="flex items-center gap-4">
@@ -21,9 +25,9 @@ const SocialAction = () => {
         <div className="flex items-center gap-2">
           <Icons.share
             size={24}
+            onClick={() => setOpen(true)}
             className="text-green-500 hover:text-green-600 cursor-pointer"
           />
-          <span className="text-gray-400">10</span>
         </div>
       </div>
       <div>
@@ -32,6 +36,7 @@ const SocialAction = () => {
           className="text-gray-500 hover:text-gray-600 cursor-pointer"
         />
       </div>
+      <ShareModal open={open} onClose={() => setOpen(false)} />
     </div>
   );
 };

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Post } from "@/src/types/post.types";
 import Image from "next/image";
 import Link from "next/link";
@@ -13,6 +13,37 @@ import {
 } from "../ui/dropdown-menu";
 import ImageLightbox from "../shared/image-lightbox";
 import SocialAction from "../shared/social-action";
+
+function PostDescription({ html, slug }: { html: string; slug: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [truncated, setTruncated] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    console.log("el", el.scrollHeight, el.clientHeight);
+
+    setTruncated(el.scrollHeight > el.clientHeight);
+  }, []);
+
+  console.log("truncated", truncated);
+
+  return (
+    <Link href={`/p/${slug}`}>
+      <div className="text-sm cursor-pointer">
+        <div
+          ref={ref}
+          className="rich-text line-clamp-4"
+          dangerouslySetInnerHTML={{ __html: html }}
+        />
+        {truncated && (
+          <span className="text-blue-500 font-medium"> ...more</span>
+        )}
+      </div>
+    </Link>
+  );
+}
 
 const FeedCard = ({ post }: { post: Post }) => {
   const [lightbox, setLightbox] = useState<{ open: boolean; index: number }>({
@@ -37,24 +68,13 @@ const FeedCard = ({ post }: { post: Post }) => {
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-        <Link href={`/p/${post.slug}`}>
-          <h1 className="font-bold text-lg">{post.title}</h1>
-          <div className="">
-            <div
-              className="rich-text text-sm"
-              dangerouslySetInnerHTML={{ __html: post.description }}
-            />
-          </div>
-        </Link>
+        <PostDescription html={post.description} slug={post.slug} />
         <div className="mt-2 flex gap-2 overflow-x-auto scrollbar-hide snap-x snap-mandatory">
           {post.images.length > 0 &&
             post.images.map((image, index) => (
               <div
                 key={image.id}
-                className={`relative shrink-0 snap-center rounded-lg overflow-hidden ${
-                  post.images.length > 1 ? "w-[90%]" : "w-full"
-                }`}
-                style={{ height: "300px" }}
+                className="relative shrink-0 snap-center rounded-lg overflow-hidden"
                 onClick={(e) => {
                   e.preventDefault();
                   setLightbox({ open: true, index });
@@ -62,9 +82,10 @@ const FeedCard = ({ post }: { post: Post }) => {
               >
                 <Image
                   src={image.url}
-                  fill
+                  width={800}
+                  height={600}
                   alt={`${post.title} ${index + 1}`}
-                  className="object-cover cursor-pointer"
+                  className="h-[300px] w-auto object-contain rounded-lg cursor-pointer"
                 />
               </div>
             ))}
