@@ -1,6 +1,7 @@
 import {
   ArrowLeft,
   Bookmark,
+  Check,
   ChevronDown,
   Copy,
   EllipsisVertical,
@@ -12,6 +13,7 @@ import {
   Plus,
   Search,
   Send,
+  SendHorizonal,
   Settings,
   ThumbsUp,
   User,
@@ -39,6 +41,8 @@ export const Icons = {
   bookmark: Bookmark,
   arrowLeft: ArrowLeft,
   copy: Copy,
+  check: Check,
+  send: SendHorizonal,
 
   logo: ({ className, ...props }: LucideProps) => (
     <svg

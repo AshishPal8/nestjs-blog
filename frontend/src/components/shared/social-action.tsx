@@ -7,8 +7,10 @@ import { useAuthStore } from "@/src/store/auth-store";
 import { useLoginModal } from "@/src/store/useLoginModal";
 import { useMutation } from "@apollo/client/react";
 import { TOGGLE_LIKE } from "@/src/graphql/mutations/likes";
+import { useRouter } from "next/navigation";
 
 const SocialAction = ({ post }: { post: Post }) => {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
 
   const [likeState, setLikeState] = useState<{
@@ -70,7 +72,10 @@ const SocialAction = ({ post }: { post: Post }) => {
             {likesCount}
           </span>
         </div>
-        <div className="flex items-center gap-2">
+        <div
+          className="flex items-center gap-2"
+          onClick={() => router.push(`/p/${post.slug}`)}
+        >
           <Icons.comment
             size={24}
             className="text-gray-500 hover:text-gray-600 cursor-pointer"
@@ -91,7 +96,7 @@ const SocialAction = ({ post }: { post: Post }) => {
           className="text-gray-500 hover:text-gray-600 cursor-pointer"
         />
       </div>
-      <ShareModal open={open} onClose={() => setOpen(false)} />
+      <ShareModal open={open} onClose={() => setOpen(false)} slug={post.slug} />
     </div>
   );
 };

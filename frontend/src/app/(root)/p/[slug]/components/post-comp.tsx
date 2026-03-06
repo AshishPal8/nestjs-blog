@@ -13,6 +13,7 @@ import Image from "next/image";
 import SocialAction from "@/src/components/shared/social-action";
 import ImageLightbox from "@/src/components/shared/image-lightbox";
 import { useRouter } from "next/navigation";
+import Comments from "./comments";
 
 const PostComp = ({ post }: { post: Post }) => {
   const router = useRouter();
@@ -79,6 +80,7 @@ const PostComp = ({ post }: { post: Post }) => {
             ))}
         </div>
         <SocialAction post={post} />
+        <Comments postId={post.id} />
       </div>
       <ImageLightbox
         images={post.images}

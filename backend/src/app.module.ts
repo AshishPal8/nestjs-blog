@@ -11,6 +11,7 @@ import { AuthMiddleware } from "@common/middleware/auth.middleware";
 import { CategoriesModule } from "@modules/categories/categories.module";
 import { UploadModule } from "@modules/uploads/upload.module";
 import { LikesModule } from "@modules/likes/likes.module";
+import { CommentsModule } from "@modules/comments/comments.module";
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { LikesModule } from "@modules/likes/likes.module";
     CategoriesModule,
     UploadModule,
     LikesModule,
+    CommentsModule,
   ],
   providers: [AppResolver],
 })
