@@ -78,7 +78,7 @@ const PostComp = ({ post }: { post: Post }) => {
               </div>
             ))}
         </div>
-        <SocialAction />
+        <SocialAction post={post} />
       </div>
       <ImageLightbox
         images={post.images}

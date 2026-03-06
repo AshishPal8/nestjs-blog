@@ -25,6 +25,9 @@ export const posts = pgTable("posts", {
 
   metaDescription: varchar("meta_description", { length: 500 }).notNull(),
 
+  likesCount: integer("likes_count").default(0).notNull(),
+  commentsCount: integer("comments_count").default(0).notNull(),
+
   isActive: boolean("is_active").default(true).notNull(),
   isDeleted: boolean("is_deleted").default(false).notNull(),
 

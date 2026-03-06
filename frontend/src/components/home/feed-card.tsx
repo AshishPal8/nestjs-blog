@@ -68,6 +68,7 @@ const FeedCard = ({ post }: { post: Post }) => {
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
+        <h1 className="font-bold text-lg">{post.title}</h1>
         <PostDescription html={post.description} slug={post.slug} />
         <div className="mt-2 flex gap-2 overflow-x-auto scrollbar-hide snap-x snap-mandatory">
           {post.images.length > 0 &&
@@ -90,7 +91,7 @@ const FeedCard = ({ post }: { post: Post }) => {
               </div>
             ))}
         </div>
-        <SocialAction />
+        <SocialAction post={post} />
       </div>
 
       <ImageLightbox

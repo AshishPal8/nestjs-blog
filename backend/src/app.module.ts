@@ -10,6 +10,7 @@ import { PostsModule } from "@modules/posts/posts.module";
 import { AuthMiddleware } from "@common/middleware/auth.middleware";
 import { CategoriesModule } from "@modules/categories/categories.module";
 import { UploadModule } from "@modules/uploads/upload.module";
+import { LikesModule } from "@modules/likes/likes.module";
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { UploadModule } from "@modules/uploads/upload.module";
     PostsModule,
     CategoriesModule,
     UploadModule,
+    LikesModule,
   ],
   providers: [AppResolver],
 })

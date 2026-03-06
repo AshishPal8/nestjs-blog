@@ -8,6 +8,9 @@ export const GET_POSTS = gql`
         title
         slug
         description
+        likesCount
+        commentsCount
+        isLiked
         createdAt
         categories {
           id
@@ -50,6 +53,9 @@ export const GET_POST_BY_SLUG = gql`
       slug
       description
       metaDescription
+      likesCount
+      commentsCount
+      isLiked
       createdAt
       categories {
         id

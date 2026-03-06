@@ -66,6 +66,15 @@ export class PostOutput {
   @Field(() => [ImageOutput], { nullable: true })
   images?: ImageOutput[];
 
+  @Field(() => Int)
+  likesCount: number;
+
+  @Field(() => Int)
+  commentsCount: number;
+
+  @Field({ nullable: true })
+  isLiked?: boolean;
+
   @Field()
   createdAt: Date;
 

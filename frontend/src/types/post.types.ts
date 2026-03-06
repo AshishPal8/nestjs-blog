@@ -4,6 +4,9 @@ export interface Post {
   slug: string;
   description: string;
   metaDescription: string;
+  likesCount: number;
+  commentsCount: number;
+  isLiked: boolean;
   createdAt: string;
   categories: { id: number; name: string; slug: string }[];
   tags: { id: number; name: string; slug: string }[];

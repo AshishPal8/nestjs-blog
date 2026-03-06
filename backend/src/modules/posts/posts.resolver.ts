@@ -7,18 +7,23 @@ import { PaginatedPostsOutput } from "./dto/paginated-posts.output";
 import { PaginationInput } from "@common/dto/pagination.input";
 import { UpdatePostInput } from "./dto/update-post-input";
 import { CreatePostInput } from "./dto/create-post.input";
+import { GqlOptionalAuthGuard } from "@modules/auth/guards/gql-optional-auth.guard";
 
 @Resolver(() => PostOutput)
 export class PostsResolver {
   constructor(private postsService: PostsService) {}
 
   @Query(() => PaginatedPostsOutput, { name: "posts" })
+  @UseGuards(GqlOptionalAuthGuard)
   async getPosts(
     @Args("pagination", { nullable: true })
     pagination: PaginationInput,
+    @Context() context: any,
   ) {
+    const userId = context.req.user?.id;
     return this.postsService.findAll(
       pagination || { page: 1, limit: 10, search: "" },
+      userId,
     );
   }
 
@@ -31,11 +36,14 @@ export class PostsResolver {
   }
 
   @Query(() => PostOutput, { name: "postBySlug" })
+  @UseGuards(GqlOptionalAuthGuard)
   async getPostBySlug(
     @Args("slug", { type: () => String })
     slug: string,
+    @Context() context: any,
   ) {
-    return this.postsService.findBySlug(slug);
+    const userId = context.req.user?.id;
+    return this.postsService.findBySlug(slug, userId);
   }
 
   @Query(() => PaginatedPostsOutput, { name: "myPosts" })

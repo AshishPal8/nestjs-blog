@@ -18,9 +18,12 @@ import { postCategories } from "@database/schema/post-categories";
 import { PaginationDto, paginationSchema } from "@common/dto/pagination.input";
 import { UpdatePostDto, updatePostSchema } from "./dto/update-post-input";
 import { users } from "@database/schema/user.schema";
+import { LikesService } from "@modules/likes/likes.service";
 
 @Injectable()
 export class PostsService {
+  constructor(private readonly likesService: LikesService) {}
+
   async create(input: CreatePostDto, authorId: number) {
     const validated = createPostSchema.parse(input);
 
@@ -265,7 +268,7 @@ export class PostsService {
     return { success: true, message: "Post deleted successfully" };
   }
 
-  async findAll(pagination: PaginationDto) {
+  async findAll(pagination: PaginationDto, userId?: number) {
     const validated = paginationSchema.parse(pagination);
     const { page, limit, search, isActive } = validated;
 
@@ -299,7 +302,7 @@ export class PostsService {
     const totalPages = Math.ceil(total / limit);
 
     const postsWithRelations = await Promise.all(
-      postsList.map((post) => this.getPostWithRelations(post.id)),
+      postsList.map((post) => this.getPostWithRelations(post.id, userId)),
     );
 
     return {
@@ -375,7 +378,7 @@ export class PostsService {
     return this.getPostWithRelations(post.id);
   }
 
-  async findBySlug(slug: string) {
+  async findBySlug(slug: string, userId?: number) {
     const [post] = await db
       .select()
       .from(posts)
@@ -385,15 +388,14 @@ export class PostsService {
     if (!post) {
       throw new NotFoundError("Post not found");
     }
-
-    return this.getPostWithRelations(post.id);
+    return this.getPostWithRelations(post.id, userId);
   }
 
   // ========================================
   // HELPER METHODS
   // ========================================
 
-  private async getPostWithRelations(postId: number) {
+  private async getPostWithRelations(postId: number, userId?: number) {
     const [post] = await db
       .select({
         id: posts.id,
@@ -402,6 +404,8 @@ export class PostsService {
         description: posts.description,
         metaDescription: posts.metaDescription,
         imageIds: posts.imageIds,
+        likesCount: posts.likesCount,
+        commentsCount: posts.commentsCount,
         isActive: posts.isActive,
         isDeleted: posts.isDeleted,
         createdAt: posts.createdAt,
@@ -456,11 +460,20 @@ export class PostsService {
         .where(inArray(categories.id, categoryIds));
     }
 
+    let isLiked = false;
+
+    if (userId) {
+      isLiked = await this.likesService.isLiked(postId, userId);
+    }
+
     return {
       ...post,
+      likesCount: post.likesCount ?? 0,
+      commentsCount: post.commentsCount ?? 0,
       images,
       categories: categoriesList,
       tags: tagsList,
+      isLiked,
     };
   }
   private async findOrCreateTags(tagNames: string[]): Promise<number[]> {
