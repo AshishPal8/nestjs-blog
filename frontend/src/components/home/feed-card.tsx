@@ -22,12 +22,8 @@ function PostDescription({ html, slug }: { html: string; slug: string }) {
     const el = ref.current;
     if (!el) return;
 
-    console.log("el", el.scrollHeight, el.clientHeight);
-
     setTruncated(el.scrollHeight > el.clientHeight);
   }, []);
-
-  console.log("truncated", truncated);
 
   return (
     <Link href={`/p/${slug}`}>

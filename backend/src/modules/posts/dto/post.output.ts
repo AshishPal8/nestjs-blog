@@ -1,5 +1,6 @@
 import { Field, Int, ObjectType } from "@nestjs/graphql";
 import { CategoryOutput } from "@modules/categories/dto/category.output";
+import { TagOutput } from "@modules/tags/dto/tag.output";
 
 @ObjectType()
 export class AuthorOutput {
@@ -14,18 +15,6 @@ export class AuthorOutput {
 
   @Field()
   email: string;
-}
-
-@ObjectType()
-export class TagOutput {
-  @Field(() => Int)
-  id: number;
-
-  @Field()
-  name: string;
-
-  @Field()
-  slug: string;
 }
 
 @ObjectType()

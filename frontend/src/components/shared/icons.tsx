@@ -6,6 +6,7 @@ import {
   Copy,
   EllipsisVertical,
   Home,
+  Loader,
   LogIn,
   LogOut,
   Menu,
@@ -43,6 +44,7 @@ export const Icons = {
   copy: Copy,
   check: Check,
   send: SendHorizonal,
+  loader: Loader,
 
   logo: ({ className, ...props }: LucideProps) => (
     <svg

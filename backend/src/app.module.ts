@@ -12,6 +12,7 @@ import { CategoriesModule } from "@modules/categories/categories.module";
 import { UploadModule } from "@modules/uploads/upload.module";
 import { LikesModule } from "@modules/likes/likes.module";
 import { CommentsModule } from "@modules/comments/comments.module";
+import { TagsModule } from "@modules/tags/tags.module";
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { CommentsModule } from "@modules/comments/comments.module";
     UploadModule,
     LikesModule,
     CommentsModule,
+    TagsModule,
   ],
   providers: [AppResolver],
 })

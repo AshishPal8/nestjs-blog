@@ -12,6 +12,7 @@ import { handleGraphqlError } from "@/src/lib/errors/handleGraphqlErrors";
 import { Button } from "../ui/button";
 import { MultiSelect } from "../ui/multi-select";
 import { GET_ACTIVE_CATEGORIES } from "@/src/graphql/queries/categories";
+import { Icons } from "../shared/icons";
 
 const DRAFT_KEY = "create-post-draft";
 
@@ -47,7 +48,7 @@ export default function CreatePostForm({ onClose }: { onClose?: () => void }) {
   );
 
   console.log("formData", formData);
-
+  const [editorKey, setEditorKey] = useState(0);
   const [images, setImages] = useState<{ url: string; id: number }[]>(
     initialDraft?.images || [],
   );
@@ -55,6 +56,10 @@ export default function CreatePostForm({ onClose }: { onClose?: () => void }) {
     initialDraft?.imageIds || [],
   );
   const [draftSaved, setDraftSaved] = useState(false);
+  const [hasDraft, setHasDraft] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return !!localStorage.getItem(DRAFT_KEY);
+  });
 
   const isFirstLoad = useRef(true);
 
@@ -85,6 +90,9 @@ export default function CreatePostForm({ onClose }: { onClose?: () => void }) {
     });
     setImages([]);
     setImageIds([]);
+    localStorage.removeItem(DRAFT_KEY);
+    setHasDraft(false);
+    setEditorKey((k) => k + 1);
   };
 
   useEffect(() => {
@@ -100,13 +108,12 @@ export default function CreatePostForm({ onClose }: { onClose?: () => void }) {
       );
 
       setDraftSaved(true);
+      setHasDraft(true);
       setTimeout(() => setDraftSaved(false), 1200);
     }, 600);
 
     return () => clearTimeout(handler);
   }, [formData, images, imageIds]);
-
-  console.log("draftSaved", draftSaved);
 
   const handleAddImage = (url: string, id: number) => {
     setImages((prev) => [...prev, { url, id }]);
@@ -137,15 +144,20 @@ export default function CreatePostForm({ onClose }: { onClose?: () => void }) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6 relative">
-      {draftSaved ? (
-        <div className="absolute right-0 -top-6 text-xs text-muted-foreground">
-          Saving...
-        </div>
-      ) : (
-        <div className="absolute right-0 -top-6 text-xs text-muted-foreground">
-          Saved
-        </div>
-      )}
+      <div className="absolute right-0 -top-6 flex items-center gap-3">
+        <span className="text-xs text-muted-foreground">
+          {draftSaved ? "Saving..." : ""}
+        </span>
+        {hasDraft && (
+          <button
+            type="button"
+            onClick={resetForm}
+            className="text-xs text-blue-500 hover:text-blue-600 transition-colors"
+          >
+            Clear draft
+          </button>
+        )}
+      </div>
       <MultiSelect
         options={categoryOptions}
         value={formData.categoryIds.map(String)}
@@ -168,6 +180,7 @@ export default function CreatePostForm({ onClose }: { onClose?: () => void }) {
       />
 
       <PostEditor
+        key={editorKey}
         value={formData.description}
         onChange={(html) =>
           setFormData((prev) => ({
@@ -189,6 +202,11 @@ export default function CreatePostForm({ onClose }: { onClose?: () => void }) {
       />
 
       <Button type="submit" disabled={loading}>
+        {loading ? (
+          <Icons.loader className="h-4 w-4 animate-spin" />
+        ) : (
+          <Icons.plus className="h-4 w-4" />
+        )}
         {loading ? "Creating..." : "Create Post"}
       </Button>
     </form>
