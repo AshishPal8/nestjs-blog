@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { lazy, Suspense, useState } from "react";
 import { Icons } from "@/src/components/shared/icons";
 import InfoAvatar from "@/src/components/shared/info-avatar";
 import {
@@ -13,7 +13,10 @@ import Image from "next/image";
 import SocialAction from "@/src/components/shared/social-action";
 import ImageLightbox from "@/src/components/shared/image-lightbox";
 import { useRouter } from "next/navigation";
-import Comments from "./comments";
+import { CommentsSkeleton } from "@/src/components/skeletons/comment-skeleton";
+// import Comments from "./comments";
+
+const Comments = lazy(() => import("./comments"));
 
 const PostComp = ({ post }: { post: Post }) => {
   const router = useRouter();
@@ -74,13 +77,17 @@ const PostComp = ({ post }: { post: Post }) => {
                   src={image.url}
                   fill
                   alt={`${post.title} ${index + 1}`}
+                  priority={index === 0}
+                  sizes="(max-width: 768px) 100vw, 33vw"
                   className="object-cover cursor-pointer"
                 />
               </div>
             ))}
         </div>
         <SocialAction post={post} />
-        <Comments postId={post.id} />
+        <Suspense fallback={<CommentsSkeleton />}>
+          <Comments postId={post.id} />
+        </Suspense>
       </div>
       <ImageLightbox
         images={post.images}

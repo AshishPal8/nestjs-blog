@@ -7,6 +7,7 @@ import { HandleAuth } from "../components/auth/HandleAuth";
 import LoginModal from "../modal/login-modal";
 import { AuthModalTrigger } from "../components/auth/AuthModalTrigger";
 import { Toaster } from "sonner";
+import { KeepAlive } from "../lib/keep-alive";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -38,6 +39,7 @@ export default function RootLayout({
             <HandleAuth />
             <AuthModalTrigger />
           </Suspense>
+          <KeepAlive />
           <LoginModal />
           {children}
           <Toaster richColors position="top-center" />

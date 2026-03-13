@@ -1,14 +1,10 @@
 import Feed from "@/src/components/home/feed";
 import FeedLayout from "@/src/components/shared/FeedLayout";
-import { GET_POSTS } from "@/src/graphql/queries/posts";
-import { query } from "@/src/lib/apollo-server-client";
+import { getPosts } from "@/src/lib/data/post";
 import { PostsData } from "@/src/types/post.types";
 
 export default async function Home() {
-  const { data } = await query<PostsData>({
-    query: GET_POSTS,
-    variables: { pagination: { page: 1, limit: 10 } },
-  });
+  const data = (await getPosts()) as PostsData;
 
   return (
     <FeedLayout>

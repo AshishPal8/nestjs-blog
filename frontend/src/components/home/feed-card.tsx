@@ -46,7 +46,6 @@ const FeedCard = ({ post }: { post: Post }) => {
     open: false,
     index: 0,
   });
-
   return (
     <div className="border-b">
       <div className="p-4">
@@ -83,6 +82,7 @@ const FeedCard = ({ post }: { post: Post }) => {
                   height={600}
                   alt={`${post.title} ${index + 1}`}
                   className="h-[300px] w-auto object-contain rounded-lg cursor-pointer"
+                  sizes="(max-width: 768px) 100vw, 33vw"
                 />
               </div>
             ))}

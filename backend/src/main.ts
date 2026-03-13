@@ -15,7 +15,7 @@ async function bootStrap() {
     allowedHeaders: ["Content-Type", "Authorization"],
   });
 
-  app.setGlobalPrefix("api");
+  app.setGlobalPrefix("api", { exclude: ["health"] });
 
   app.listen(envConfig.port);
 
