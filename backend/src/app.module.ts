@@ -13,6 +13,7 @@ import { UploadModule } from "@modules/uploads/upload.module";
 import { LikesModule } from "@modules/likes/likes.module";
 import { CommentsModule } from "@modules/comments/comments.module";
 import { TagsModule } from "@modules/tags/tags.module";
+import { AppController } from "./app.controller";
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { TagsModule } from "@modules/tags/tags.module";
     CommentsModule,
     TagsModule,
   ],
+  controllers: [AppController],
   providers: [AppResolver],
 })
 export class AppModule implements NestModule {
