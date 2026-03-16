@@ -1,18 +1,25 @@
 import FeedLayout from "@/src/components/shared/FeedLayout";
+import { GET_POST_BY_SLUG } from "@/src/graphql/queries/posts";
+import { query } from "@/src/lib/apollo-server-client";
 import { Post } from "@/src/types/post.types";
 import { notFound } from "next/navigation";
 import PostComp from "./components/post-comp";
-import { getPostBySlug } from "@/src/lib/data/post";
 
 const PostPage = async ({ params }: { params: Promise<{ slug: string }> }) => {
-  const post = (await getPostBySlug((await params).slug)) as Post;
+  const slug = (await params).slug;
 
-  if (!post) return notFound();
+  const { data } = await query<{ postBySlug: Post }>({
+    query: GET_POST_BY_SLUG,
+    variables: { slug },
+    fetchPolicy: "cache-first",
+  });
+
+  if (!data?.postBySlug) return notFound();
 
   return (
     <FeedLayout>
       <div className="w-full mx-auto bg-white rounded-md">
-        <PostComp post={post} />
+        <PostComp post={data.postBySlug} />
       </div>
     </FeedLayout>
   );

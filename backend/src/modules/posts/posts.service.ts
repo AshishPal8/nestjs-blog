@@ -270,7 +270,7 @@ export class PostsService {
 
   async findAll(pagination: PaginationDto, userId?: number) {
     const validated = paginationSchema.parse(pagination);
-    const { page, limit, search, isActive } = validated;
+    const { page, limit, search, isActive, categorySlug } = validated;
 
     const offset = (page - 1) * limit;
 
@@ -282,6 +282,41 @@ export class PostsService {
 
     if (isActive !== undefined) {
       filters.push(eq(posts.isActive, isActive));
+    }
+
+    if (categorySlug) {
+      const [category] = await db
+        .select()
+        .from(categories)
+        .where(
+          and(
+            eq(categories.slug, categorySlug),
+            eq(categories.isDeleted, false),
+          ),
+        )
+        .limit(1);
+
+      if (category) {
+        const postIdsInCategory = await db
+          .select({ postId: postCategories.postId })
+          .from(postCategories)
+          .where(eq(postCategories.categoryId, category.id));
+
+        const ids = postIdsInCategory.map((r) => r.postId);
+        if (ids.length === 0)
+          return {
+            data: [],
+            meta: {
+              total: 0,
+              page,
+              limit,
+              totalPages: 0,
+              hasNext: false,
+              hasPrev: false,
+            },
+          };
+        filters.push(inArray(posts.id, ids));
+      }
     }
 
     const whereClause = and(...filters);
