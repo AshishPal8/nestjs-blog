@@ -18,6 +18,7 @@ import {
   Settings,
   ThumbsUp,
   User,
+  X,
   type LucideIcon,
   type LucideProps,
 } from "lucide-react";
@@ -45,6 +46,7 @@ export const Icons = {
   check: Check,
   send: SendHorizonal,
   loader: Loader,
+  x: X,
 
   logo: ({ className, ...props }: LucideProps) => (
     <svg
