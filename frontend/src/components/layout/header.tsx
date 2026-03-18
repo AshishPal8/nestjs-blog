@@ -59,12 +59,17 @@ const Header = () => {
           )}
         </div>
       </div>
-      <div className="items-center gap-2 hidden sm:flex">
+      <div className="items-center gap-2 flex">
         <CreatePostModal />
         {!mounted ? (
           <div className="h-10 w-24 bg-gray-100 animate-pulse rounded-md" />
         ) : user ? (
-          <UserDropdown isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} />
+          <div className="items-center gap-2 hidden sm:flex">
+            <UserDropdown
+              isMenuOpen={isMenuOpen}
+              setIsMenuOpen={setIsMenuOpen}
+            />
+          </div>
         ) : (
           <Button
             variant="outline"
