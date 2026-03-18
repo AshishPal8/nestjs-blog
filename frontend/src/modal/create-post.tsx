@@ -62,7 +62,7 @@ const CreatePostModal = () => {
     <>
       <Button onClick={handleCreatePost} className="cursor-pointer">
         <Icons.plus />
-        Create
+        <span className="hidden sm:block">Create</span>
       </Button>
 
       {isDesktop ? (
@@ -77,10 +77,7 @@ const CreatePostModal = () => {
         </Dialog>
       ) : (
         <Drawer open={isOpen} onOpenChange={setIsOpen}>
-          <DrawerContent
-            className="rounded-none flex flex-col"
-            style={{ height: "100dvh" }}
-          >
+          <DrawerContent className="rounded-none flex flex-col h-screen">
             <div className="overflow-y-auto flex-1">{Content}</div>
           </DrawerContent>
         </Drawer>
