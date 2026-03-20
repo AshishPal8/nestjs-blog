@@ -14,6 +14,8 @@ import { LikesModule } from "@modules/likes/likes.module";
 import { CommentsModule } from "@modules/comments/comments.module";
 import { TagsModule } from "@modules/tags/tags.module";
 import { AppController } from "./app.controller";
+import { APP_INTERCEPTOR } from "@nestjs/core";
+import { LoggingInterceptor } from "@common/interceptors/logging.interceptor";
 
 @Module({
   imports: [
@@ -42,7 +44,10 @@ import { AppController } from "./app.controller";
     TagsModule,
   ],
   controllers: [AppController],
-  providers: [AppResolver],
+  providers: [
+    AppResolver,
+    { provide: APP_INTERCEPTOR, useClass: LoggingInterceptor },
+  ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
