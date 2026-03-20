@@ -66,7 +66,6 @@ export const GET_POST_BY_SLUG = gql`
         id
         name
         avatar
-        email
       }
       tags {
         id

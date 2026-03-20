@@ -18,6 +18,9 @@ export const { getClient, query } = registerApolloClient(async () => {
       headers: {
         cookie: cookie,
       },
+      fetchOptions: {
+        next: { revalidate: 30 },
+      },
     }),
   });
 });

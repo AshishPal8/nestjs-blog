@@ -5,15 +5,22 @@ import { Post } from "@/src/types/post.types";
 import { notFound } from "next/navigation";
 import PostComp from "./components/post-comp";
 import { Metadata } from "next";
+import { unstable_cache } from "next/cache";
 
-const fetchPost = async (slug: string) => {
-  const { data } = await query<{ postBySlug: Post }>({
-    query: GET_POST_BY_SLUG,
-    variables: { slug },
-    fetchPolicy: "cache-first",
-  });
-  return data?.postBySlug;
-};
+const fetchPost = unstable_cache(
+  async (slug: string) => {
+    const { data } = await query<{ postBySlug: Post }>({
+      query: GET_POST_BY_SLUG,
+      variables: { slug },
+    });
+    return data?.postBySlug ?? null;
+  },
+  ["post-by-slug"],
+  {
+    revalidate: 60,
+    tags: ["post"],
+  },
+);
 
 export const generateMetadata = async ({
   params,
