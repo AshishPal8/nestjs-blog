@@ -18,11 +18,11 @@ import { postCategories } from "@database/schema/post-categories";
 import { PaginationDto, paginationSchema } from "@common/dto/pagination.input";
 import { UpdatePostDto, updatePostSchema } from "./dto/update-post-input";
 import { users } from "@database/schema/user.schema";
-import { LikesService } from "@modules/likes/likes.service";
+import { likes } from "@database/schema/like.schema";
 
 @Injectable()
 export class PostsService {
-  constructor(private readonly likesService: LikesService) {}
+  constructor() {}
 
   async create(input: CreatePostDto, authorId: number) {
     const validated = createPostSchema.parse(input);
@@ -271,18 +271,12 @@ export class PostsService {
   async findAll(pagination: PaginationDto, userId?: number) {
     const validated = paginationSchema.parse(pagination);
     const { page, limit, search, isActive, categorySlug } = validated;
-
     const offset = (page - 1) * limit;
 
     const filters = [eq(posts.isDeleted, false)];
 
-    if (search) {
-      filters.push(ilike(posts.title, `%${search}%`));
-    }
-
-    if (isActive !== undefined) {
-      filters.push(eq(posts.isActive, isActive));
-    }
+    if (search) filters.push(ilike(posts.title, `%${search}%`));
+    if (isActive !== undefined) filters.push(eq(posts.isActive, isActive));
 
     if (categorySlug) {
       const [category] = await db
@@ -303,7 +297,7 @@ export class PostsService {
           .where(eq(postCategories.categoryId, category.id));
 
         const ids = postIdsInCategory.map((r) => r.postId);
-        if (ids.length === 0)
+        if (ids.length === 0) {
           return {
             data: [],
             meta: {
@@ -315,33 +309,31 @@ export class PostsService {
               hasPrev: false,
             },
           };
+        }
         filters.push(inArray(posts.id, ids));
       }
     }
 
     const whereClause = and(...filters);
 
-    const [{ value: total }] = await db
-      .select({ value: count() })
-      .from(posts)
-      .where(whereClause);
+    const [countResult, postsList] = await Promise.all([
+      db.select({ value: count() }).from(posts).where(whereClause),
+      db
+        .select()
+        .from(posts)
+        .where(whereClause)
+        .orderBy(desc(posts.createdAt))
+        .limit(limit)
+        .offset(offset),
+    ]);
 
-    const postsList = await db
-      .select()
-      .from(posts)
-      .where(whereClause)
-      .orderBy(desc(posts.createdAt))
-      .limit(limit)
-      .offset(offset);
-
+    const total = countResult[0].value;
     const totalPages = Math.ceil(total / limit);
 
-    const postsWithRelations = await Promise.all(
-      postsList.map((post) => this.getPostWithRelations(post.id, userId)),
-    );
+    const data = await this.getPostsWithRelationsBatch(postsList, userId);
 
     return {
-      data: postsWithRelations,
+      data,
       meta: {
         total,
         page,
@@ -356,38 +348,31 @@ export class PostsService {
   async findByAuthor(authorId: number, pagination: PaginationDto) {
     const validated = paginationSchema.parse(pagination);
     const { page, limit, search } = validated;
-
     const offset = (page - 1) * limit;
 
     const filters = [eq(posts.isDeleted, false), eq(posts.authorId, authorId)];
-
-    if (search) {
-      filters.push(ilike(posts.title, `%${search}%`));
-    }
+    if (search) filters.push(ilike(posts.title, `%${search}%`));
 
     const whereClause = and(...filters);
 
-    const [{ value: total }] = await db
-      .select({ value: count() })
-      .from(posts)
-      .where(whereClause);
+    const [countResult, postsList] = await Promise.all([
+      db.select({ value: count() }).from(posts).where(whereClause),
+      db
+        .select()
+        .from(posts)
+        .where(whereClause)
+        .orderBy(desc(posts.createdAt))
+        .limit(limit)
+        .offset(offset),
+    ]);
 
-    const postsList = await db
-      .select()
-      .from(posts)
-      .where(whereClause)
-      .orderBy(desc(posts.createdAt))
-      .limit(limit)
-      .offset(offset);
-
+    const total = countResult[0].value;
     const totalPages = Math.ceil(total / limit);
 
-    const postsWithRelations = await Promise.all(
-      postsList.map((post) => this.getPostWithRelations(post.id)),
-    );
+    const data = await this.getPostsWithRelationsBatch(postsList);
 
     return {
-      data: postsWithRelations,
+      data,
       meta: {
         total,
         page,
@@ -461,45 +446,53 @@ export class PostsService {
       throw new NotFoundError("Post not found");
     }
 
-    let images = [];
+    const [images, postTagsList, postCategoriesList, isLiked] =
+      await Promise.all([
+        post.imageIds?.length > 0
+          ? db.select().from(uploads).where(inArray(uploads.id, post.imageIds))
+          : Promise.resolve([]),
+        db
+          .select({ tagId: postTags.tagId })
+          .from(postTags)
+          .where(eq(postTags.postId, postId)),
+        db
+          .select({ categoryId: postCategories.categoryId })
+          .from(postCategories)
+          .where(eq(postCategories.postId, postId)),
+        userId
+          ? db
+              .select()
+              .from(likes)
+              .where(and(eq(likes.postId, postId), eq(likes.userId, userId)))
+              .limit(1)
+              .then((rows) => rows.length > 0)
+          : Promise.resolve(false),
+      ]);
 
-    if (post.imageIds && post.imageIds.length > 0) {
-      images = await db
-        .select()
-        .from(uploads)
-        .where(inArray(uploads.id, post.imageIds));
-    }
-
-    const postTagsList = await db
-      .select({ tagId: postTags.tagId })
-      .from(postTags)
-      .where(eq(postTags.postId, postId));
-
-    const tagIds = postTagsList.map((pt) => pt.tagId);
-    let tagsList = [];
-    if (tagIds.length > 0) {
-      tagsList = await db.select().from(tags).where(inArray(tags.id, tagIds));
-    }
-
-    const postCategoriesList = await db
-      .select({ categoryId: postCategories.categoryId })
-      .from(postCategories)
-      .where(eq(postCategories.postId, postId));
-
-    const categoryIds = postCategoriesList.map((pc) => pc.categoryId);
-    let categoriesList = [];
-    if (categoryIds.length > 0) {
-      categoriesList = await db
-        .select()
-        .from(categories)
-        .where(inArray(categories.id, categoryIds));
-    }
-
-    let isLiked = false;
-
-    if (userId) {
-      isLiked = await this.likesService.isLiked(postId, userId);
-    }
+    const [tagsList, categoriesList] = await Promise.all([
+      postTagsList.length > 0
+        ? db
+            .select()
+            .from(tags)
+            .where(
+              inArray(
+                tags.id,
+                postTagsList.map((t) => t.tagId),
+              ),
+            )
+        : Promise.resolve([]),
+      postCategoriesList.length > 0
+        ? db
+            .select()
+            .from(categories)
+            .where(
+              inArray(
+                categories.id,
+                postCategoriesList.map((c) => c.categoryId),
+              ),
+            )
+        : Promise.resolve([]),
+    ]);
 
     return {
       ...post,
@@ -511,30 +504,128 @@ export class PostsService {
       isLiked,
     };
   }
-  private async findOrCreateTags(tagNames: string[]): Promise<number[]> {
-    const tagIds: number[] = [];
 
-    for (const name of tagNames) {
-      const slug = SlugUtil.generate(name);
+  private async getPostsWithRelationsBatch(
+    postsList: Awaited<ReturnType<typeof db.select>>["0"][],
+    userId?: number,
+  ) {
+    if (postsList.length === 0) return [];
 
-      const [existingTag] = await db
-        .select()
-        .from(tags)
-        .where(eq(tags.slug, slug))
-        .limit(1);
+    const postIds = postsList.map((p) => p.id);
+    const allImageIds = [
+      ...new Set(postsList.flatMap((p) => p.imageIds ?? [])),
+    ];
 
-      if (existingTag) {
-        tagIds.push(existingTag.id);
-      } else {
-        const [newTag] = await db
-          .insert(tags)
-          .values({ name, slug })
-          .returning();
+    const [allPostTags, allPostCategories, allImages, allUserLikes] =
+      await Promise.all([
+        db.select().from(postTags).where(inArray(postTags.postId, postIds)),
+        db
+          .select()
+          .from(postCategories)
+          .where(inArray(postCategories.postId, postIds)),
+        allImageIds.length > 0
+          ? db.select().from(uploads).where(inArray(uploads.id, allImageIds))
+          : Promise.resolve([]),
+        userId
+          ? db
+              .select({ postId: likes.postId })
+              .from(likes)
+              .where(
+                and(inArray(likes.postId, postIds), eq(likes.userId, userId)),
+              )
+          : Promise.resolve([]),
+      ]);
 
-        tagIds.push(newTag.id);
-      }
+    const allTagIds = [...new Set(allPostTags.map((pt) => pt.tagId))];
+    const allCategoryIds = [
+      ...new Set(allPostCategories.map((pc) => pc.categoryId)),
+    ];
+
+    const [allTags, allCategories, allAuthors] = await Promise.all([
+      allTagIds.length > 0
+        ? db.select().from(tags).where(inArray(tags.id, allTagIds))
+        : Promise.resolve([]),
+      allCategoryIds.length > 0
+        ? db
+            .select()
+            .from(categories)
+            .where(inArray(categories.id, allCategoryIds))
+        : Promise.resolve([]),
+      db
+        .select({
+          id: users.id,
+          name: users.name,
+          email: users.email,
+          avatar: users.avatar,
+        })
+        .from(users)
+        .where(
+          inArray(users.id, [...new Set(postsList.map((p) => p.authorId))]),
+        ),
+    ]);
+
+    const tagById = new Map(allTags.map((t) => [t.id, t]));
+    const categoryById = new Map(allCategories.map((c) => [c.id, c]));
+    const imageById = new Map(allImages.map((img) => [img.id, img]));
+    const authorById = new Map(allAuthors.map((u) => [u.id, u]));
+    const likedPostIds = new Set(allUserLikes.map((l) => l.postId));
+
+    const tagsByPost = new Map<number, typeof allTags>();
+    const categoriesByPost = new Map<number, typeof allCategories>();
+
+    for (const pt of allPostTags) {
+      if (!tagsByPost.has(pt.postId)) tagsByPost.set(pt.postId, []);
+      const tag = tagById.get(pt.tagId);
+      if (tag) tagsByPost.get(pt.postId)!.push(tag);
     }
 
-    return tagIds;
+    for (const pc of allPostCategories) {
+      if (!categoriesByPost.has(pc.postId)) categoriesByPost.set(pc.postId, []);
+      const cat = categoryById.get(pc.categoryId);
+      if (cat) categoriesByPost.get(pc.postId)!.push(cat);
+    }
+
+    return postsList.map((post) => ({
+      ...post,
+      author: authorById.get(post.authorId) ?? null,
+      tags: tagsByPost.get(post.id) ?? [],
+      categories: categoriesByPost.get(post.id) ?? [],
+      images: (post.imageIds ?? [])
+        .map((id) => imageById.get(id))
+        .filter(Boolean),
+      isLiked: likedPostIds.has(post.id),
+      likesCount: post.likesCount ?? 0,
+      commentsCount: post.commentsCount ?? 0,
+    }));
+  }
+
+  private async findOrCreateTags(tagNames: string[]): Promise<number[]> {
+    const slugsAndNames = tagNames.map((name) => ({
+      name,
+      slug: SlugUtil.generate(name),
+    }));
+
+    const slugs = slugsAndNames.map((t) => t.slug);
+
+    const existingTags = await db
+      .select()
+      .from(tags)
+      .where(inArray(tags.slug, slugs));
+
+    const existingSlugMap = new Map(existingTags.map((t) => [t.slug, t]));
+
+    const toCreate = slugsAndNames.filter((t) => !existingSlugMap.has(t.slug));
+
+    let newTags: typeof existingTags = [];
+    if (toCreate.length > 0) {
+      newTags = await db.insert(tags).values(toCreate).returning();
+    }
+
+    // Return IDs in the same order as input tagNames
+    return slugsAndNames.map((t) => {
+      const existing = existingSlugMap.get(t.slug);
+      if (existing) return existing.id;
+      return newTags.find((nt) => nt.slug === t.slug)!.id;
+    });
   }
 }

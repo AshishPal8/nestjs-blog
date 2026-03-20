@@ -6,34 +6,44 @@ import {
   timestamp,
   varchar,
   boolean,
+  index,
 } from "drizzle-orm/pg-core";
 import { users } from "./user.schema";
 
-export const posts = pgTable("posts", {
-  id: serial("id").primaryKey(),
+export const posts = pgTable(
+  "posts",
+  {
+    id: serial("id").primaryKey(),
 
-  title: varchar("title", { length: 255 }).notNull(),
-  slug: varchar("slug", { length: 255 }).unique().notNull(),
+    title: varchar("title", { length: 255 }).notNull(),
+    slug: varchar("slug", { length: 255 }).unique().notNull(),
 
-  description: text("description").notNull(),
+    description: text("description").notNull(),
 
-  imageIds: integer("image_ids").array().notNull(),
+    imageIds: integer("image_ids").array().notNull(),
 
-  authorId: integer("author_id")
-    .references(() => users.id)
-    .notNull(),
+    authorId: integer("author_id")
+      .references(() => users.id)
+      .notNull(),
 
-  metaDescription: varchar("meta_description", { length: 500 }).notNull(),
+    metaDescription: varchar("meta_description", { length: 500 }).notNull(),
 
-  likesCount: integer("likes_count").default(0).notNull(),
-  commentsCount: integer("comments_count").default(0).notNull(),
+    likesCount: integer("likes_count").default(0).notNull(),
+    commentsCount: integer("comments_count").default(0).notNull(),
 
-  isActive: boolean("is_active").default(true).notNull(),
-  isDeleted: boolean("is_deleted").default(false).notNull(),
+    isActive: boolean("is_active").default(true).notNull(),
+    isDeleted: boolean("is_deleted").default(false).notNull(),
 
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
-});
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  },
+  (table) => ({
+    slugIdx: index("posts_slug_idx").on(table.slug),
+    authorIdx: index("posts_author_idx").on(table.authorId),
+    createdAtIdx: index("posts_created_at_idx").on(table.createdAt),
+    isDeletedIdx: index("posts_is_deleted_idx").on(table.isDeleted),
+  }),
+);
 
 export type Post = typeof posts.$inferSelect;
 export type NewPost = typeof posts.$inferInsert;

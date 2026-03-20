@@ -42,7 +42,7 @@ export class CommentsService {
     return result ?? null;
   }
 
-  async findByPost(postId: number, page = 1, limit = 1) {
+  async findByPost(postId: number, page = 1, limit = 20) {
     const offset = (page - 1) * limit;
 
     const topLevel = await db

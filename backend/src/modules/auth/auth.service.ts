@@ -17,7 +17,7 @@ export class AuthService {
       .where(
         or(
           googleId ? eq(users.googleId, googleId) : undefined,
-          facebookId ? eq(users.googleId, googleId) : undefined,
+          facebookId ? eq(users.facebookId, facebookId) : undefined,
           eq(users.email, email),
         ),
       )
