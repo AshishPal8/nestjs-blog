@@ -1,6 +1,6 @@
 import FeedLayout from "@/src/components/shared/FeedLayout";
 import { GET_POST_BY_SLUG } from "@/src/graphql/queries/posts";
-import { query } from "@/src/lib/apollo-server-client";
+import { publicQuery } from "@/src/lib/apollo-server-client";
 import { Post } from "@/src/types/post.types";
 import { notFound } from "next/navigation";
 import PostComp from "./components/post-comp";
@@ -9,17 +9,15 @@ import { unstable_cache } from "next/cache";
 
 const fetchPost = unstable_cache(
   async (slug: string) => {
-    const { data } = await query<{ postBySlug: Post }>({
+    const { data } = await publicQuery<{ postBySlug: Post }>({
+      // ← use publicQuery
       query: GET_POST_BY_SLUG,
       variables: { slug },
     });
     return data?.postBySlug ?? null;
   },
   ["post-by-slug"],
-  {
-    revalidate: 60,
-    tags: ["post"],
-  },
+  { revalidate: 60, tags: ["post"] },
 );
 
 export const generateMetadata = async ({

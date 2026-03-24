@@ -24,3 +24,23 @@ export const { getClient, query } = registerApolloClient(async () => {
     }),
   });
 });
+
+export const publicQuery = async <T>(options: any): Promise<{ data: T }> => {
+  const client = new ApolloClient({
+    cache: new InMemoryCache(),
+    link: new HttpLink({
+      uri: process.env.NEXT_PUBLIC_GRAPHQL_URL,
+      fetchOptions: {
+        next: { revalidate: 60 },
+      },
+    }),
+  });
+
+  const result = await client.query<T>(options);
+
+  if (!result.data) {
+    throw new Error("No data returned from query");
+  }
+
+  return { data: result.data };
+};
