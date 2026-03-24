@@ -6,7 +6,7 @@ import {
 import { SlugUtil } from "@common/utils/slug.util";
 import { db } from "@database/db";
 import { categories } from "@database/schema/categories.schema";
-import { and, count, eq, ilike } from "drizzle-orm";
+import { and, count, eq, ilike, ne } from "drizzle-orm";
 import {
   ConflictError,
   NotFoundError,
@@ -157,7 +157,13 @@ export class CategoriesService {
       const [existingCategory] = await db
         .select()
         .from(categories)
-        .where(and(eq(categories.slug, slug), eq(categories.isDeleted, false)))
+        .where(
+          and(
+            eq(categories.slug, slug),
+            eq(categories.isDeleted, false),
+            ne(categories.id, id), // exclude current category
+          ),
+        )
         .limit(1);
 
       if (existingCategory) {

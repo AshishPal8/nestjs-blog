@@ -1,5 +1,4 @@
 import { jwtVerify } from "jose";
-const secret = new TextEncoder().encode(process.env.JWT_SECRET!);
 
 export interface JWTPayload {
   id: string;
@@ -9,6 +8,8 @@ export interface JWTPayload {
 
 export async function verifyToken(token: string): Promise<JWTPayload | null> {
   try {
+    const secret = new TextEncoder().encode(process.env.JWT_SECRET!);
+
     const { payload } = await jwtVerify(token, secret);
     return payload as unknown as JWTPayload;
   } catch (error) {

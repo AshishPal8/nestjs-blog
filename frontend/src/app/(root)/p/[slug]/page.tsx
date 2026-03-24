@@ -6,27 +6,33 @@ import { notFound } from "next/navigation";
 import PostComp from "./components/post-comp";
 import { Metadata } from "next";
 import { unstable_cache } from "next/cache";
+import { cookies } from "next/headers";
+import { envConfig } from "@/src/config/env.config";
 
 const fetchPost = unstable_cache(
-  async (slug: string) => {
-    const { data } = await publicQuery<{ postBySlug: Post }>({
-      // ← use publicQuery
-      query: GET_POST_BY_SLUG,
-      variables: { slug },
-    });
+  async (slug: string, authCookie: string | null) => {
+    const { data } = await publicQuery<{ postBySlug: Post }>(
+      {
+        query: GET_POST_BY_SLUG,
+        variables: { slug },
+      },
+      authCookie,
+    );
     return data?.postBySlug ?? null;
   },
   ["post-by-slug"],
   { revalidate: 60, tags: ["post"] },
 );
-
 export const generateMetadata = async ({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> => {
   const slug = (await params).slug;
-  const post = await fetchPost(slug);
+  const cookieStore = await cookies();
+  const authCookie = cookieStore.get(envConfig.authCookieName)?.value ?? null;
+
+  const post = await fetchPost(slug, authCookie);
 
   if (!post) {
     return {
@@ -72,7 +78,10 @@ export const generateMetadata = async ({
 
 const PostPage = async ({ params }: { params: Promise<{ slug: string }> }) => {
   const slug = (await params).slug;
-  const post = await fetchPost(slug);
+  const cookieStore = await cookies();
+  const authCookie = cookieStore.get(envConfig.authCookieName)?.value ?? null;
+
+  const post = await fetchPost(slug, authCookie);
 
   if (!post) return notFound();
 
