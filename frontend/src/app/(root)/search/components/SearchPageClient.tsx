@@ -94,10 +94,10 @@ const SearchPageClient = () => {
   };
 
   return (
-    <div className="w-full bg-white">
+    <div className="w-full bg-card rounded-2xl overflow-hidden">
       {/* search input */}
-      <div className="sticky top-[88px] z-10 bg-white border-b px-4 py-3">
-        <div className="flex items-center gap-2 bg-gray-100 rounded-full px-4 py-2">
+      <div className="sticky top-[8px] z-10 bg-card border-b px-4 py-3">
+        <div className="flex items-center gap-2 bg-muted rounded-full px-4 py-2">
           <SearchIcon className="h-4 w-4 text-muted-foreground shrink-0" />
           <input
             value={input}
@@ -142,17 +142,17 @@ const SearchPageClient = () => {
           {[1, 2, 3].map((i) => (
             <div key={i} className="p-4 space-y-3">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-gray-100" />
-                <div className="h-3 bg-gray-100 rounded w-24" />
+                <div className="w-8 h-8 rounded-full bg-muted" />
+                <div className="h-3 bg-muted rounded w-24" />
               </div>
-              <div className="h-4 bg-gray-100 rounded w-3/4" />
-              <div className="h-3 bg-gray-100 rounded w-full" />
+              <div className="h-4 bg-muted rounded w-3/4" />
+              <div className="h-3 bg-muted rounded w-full" />
             </div>
           ))}
         </div>
       ) : posts.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 gap-2">
-          <SearchIcon className="h-10 w-10 text-gray-200" />
+          <SearchIcon className="h-10 w-10 text-muted" />
           <p className="text-sm text-muted-foreground">No posts found</p>
           {(categorySlug || debouncedSearch) && (
             <button

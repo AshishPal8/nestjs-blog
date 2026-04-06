@@ -11,7 +11,7 @@ export default function DashLayout({
       <div className="shrink-0">
         <DashSidebar />
       </div>
-      <main className="flex-1 overflow-y-auto bg-[#F9F9F9]">
+      <main className="flex-1 overflow-y-auto bg-background">
         <div className="p-8">{children}</div>
       </main>
     </div>

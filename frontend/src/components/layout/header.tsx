@@ -10,6 +10,7 @@ import MobileMenu from "./mobile-menu";
 import CreatePostModal from "@/src/modal/create-post";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import ThemeToggle from "../shared/theme-toggle";
 
 const Header = () => {
   const loginModal = useLoginModal();
@@ -33,7 +34,7 @@ const Header = () => {
   };
 
   return (
-    <div className="w-full px-0 sm:px-5 md:px-10 lg:px-16 py-3 flex items-center justify-between border-b border-gray-200">
+    <div className="w-full px-0 sm:px-5 md:px-10 lg:px-16 py-3 flex items-center justify-between border-b border-border bg-background">
       <div className="flex items-center justify-between gap-4 sm:gap-8">
         <MobileMenu />
         <Link href="/">
@@ -60,6 +61,7 @@ const Header = () => {
         </div>
       </div>
       <div className="items-center gap-2 flex">
+        <ThemeToggle />
         <CreatePostModal />
         {!mounted ? (
           <div className="h-10 w-24 bg-gray-100 animate-pulse rounded-md" />

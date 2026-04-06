@@ -15,9 +15,11 @@ const InfoAvatar = ({ post }: { post: Post }) => {
       />
       <div className="flex flex-col">
         <p className="text-sm font-semibold">{post?.author?.name}</p>
-        <p className="text-sm text-muted-foreground">
-          {timeAgo(post?.createdAt)}
-        </p>
+        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+          <span>{timeAgo(post?.createdAt)}</span>
+          <span>·</span>
+          <span>{post.readingTime || 1} min read</span>
+        </div>
       </div>
     </div>
   );

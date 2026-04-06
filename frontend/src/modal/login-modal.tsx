@@ -23,7 +23,7 @@ const LoginModal = () => {
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
   const Content = (
-    <div className="overflow-hidden border-none rounded-t-3xl md:rounded-3xl gap-0 bg-white">
+    <div className="overflow-hidden border-none rounded-t-3xl md:rounded-3xl gap-0 bg-card">
       <div className="relative w-full h-48">
         <Image
           src={LoginBg}
@@ -32,7 +32,7 @@ const LoginModal = () => {
           className="object-cover"
           priority
         />
-        <div className="absolute inset-0 bg-linear-to-t from-white via-white/40 to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-t from-card via-card/40 to-transparent" />
       </div>
 
       <div className="px-6 pb-8 pt-2">

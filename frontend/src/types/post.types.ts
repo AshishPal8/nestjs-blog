@@ -6,8 +6,10 @@ export interface Post {
   metaDescription: string;
   likesCount: number;
   commentsCount: number;
+  readingTime: number;
   isLiked: boolean;
   createdAt: string;
+  updatedAt: string;
   categories: { id: number; name: string; slug: string }[];
   tags: { id: number; name: string; slug: string }[];
   images: { id: number; url: string }[];

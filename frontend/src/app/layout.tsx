@@ -8,6 +8,7 @@ import LoginModal from "../modal/login-modal";
 import { AuthModalTrigger } from "../components/auth/AuthModalTrigger";
 import { Toaster } from "sonner";
 import { KeepAlive } from "../lib/keep-alive";
+import { ThemeProvider } from "../providers/theme-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -87,16 +88,18 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ApolloClientProvider>
-          <Suspense fallback={null}>
-            <HandleAuth />
-            <AuthModalTrigger />
-          </Suspense>
-          <KeepAlive />
-          <LoginModal />
-          {children}
-          <Toaster richColors position="top-center" />
-        </ApolloClientProvider>
+        <ThemeProvider>
+          <ApolloClientProvider>
+            <Suspense fallback={null}>
+              <HandleAuth />
+              <AuthModalTrigger />
+            </Suspense>
+            <KeepAlive />
+            <LoginModal />
+            {children}
+            <Toaster richColors position="top-center" />
+          </ApolloClientProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

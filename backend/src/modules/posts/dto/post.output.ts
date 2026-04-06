@@ -59,6 +59,9 @@ export class PostOutput {
   likesCount: number;
 
   @Field(() => Int)
+  readingTime: number;
+
+  @Field(() => Int)
   commentsCount: number;
 
   @Field({ nullable: true })

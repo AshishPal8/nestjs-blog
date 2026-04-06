@@ -152,7 +152,7 @@ export default function CreatePostForm({ onClose }: { onClose?: () => void }) {
           <button
             type="button"
             onClick={resetForm}
-            className="text-xs text-blue-500 hover:text-blue-600 transition-colors"
+            className="text-xs text-primary hover:text-primary/80 transition-colors"
           >
             Clear draft
           </button>
