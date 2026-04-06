@@ -88,7 +88,8 @@
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.21 0.006 285.885);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.488 0.243 264.376);
+  --primary: oklch(0.546 0.245 262.881);
+  /* --primary: oklch(0.488 0.243 264.376); */
   --primary-foreground: oklch(0.97 0.014 254.604);
   --secondary: oklch(0.274 0.006 286.033);
   --secondary-foreground: oklch(0.985 0 0);
@@ -206,15 +207,15 @@
 }
 
 .rich-text blockquote {
-  border-left: 3px solid hsl(var(--border));
+  border-left: 3px solid var(--border);
   padding-left: 1rem;
   margin: 1.25rem 0;
-  color: hsl(var(--muted-foreground));
+  color: var(--muted-foreground);
   font-style: italic;
 }
 
 .rich-text code {
-  background: hsl(var(--muted));
+  background: var(--muted);
   padding: 0.2em 0.45em;
   border-radius: 4px;
   font-size: 0.85em;
@@ -222,7 +223,7 @@
 }
 
 .rich-text pre {
-  background: hsl(var(--muted));
+  background: var(--muted);
   padding: 1rem;
   border-radius: 8px;
   overflow-x: auto;
@@ -237,7 +238,7 @@
 
 .rich-text hr {
   border: none;
-  border-top: 1px solid hsl(var(--border));
+  border-top: 1px solid var(--border);
   margin: 1.5rem 0;
 }
 
@@ -250,7 +251,7 @@
 /* tiptap placeholder */
 .ProseMirror p.is-editor-empty:first-child::before {
   content: attr(data-placeholder);
-  color: hsl(var(--muted-foreground));
+  color: var(--muted-foreground);
   pointer-events: none;
   float: left;
   height: 0;
@@ -275,5 +276,5 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
   line-height: 1.6;
-  color: hsl(var(--muted-foreground));
+  color: var(--muted-foreground);
 }

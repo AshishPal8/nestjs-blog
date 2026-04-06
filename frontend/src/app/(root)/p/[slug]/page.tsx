@@ -87,7 +87,7 @@ const PostPage = async ({ params }: { params: Promise<{ slug: string }> }) => {
 
   return (
     <FeedLayout>
-      <div className="w-full mx-auto bg-white rounded-md">
+      <div className="w-full mx-auto bg-card rounded-md">
         <PostComp post={post} />
       </div>
     </FeedLayout>

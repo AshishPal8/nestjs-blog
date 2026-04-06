@@ -37,7 +37,7 @@ const CategoryStrip = ({ categories }: { categories: Category[] }) => {
   );
 
   return (
-    <div className="bg-[#f5f6ff] py-2 border-b border-gray-200">
+    <div className="bg-muted py-2 border-b border-border">
       {/* ── DESKTOP ── */}
       <div className="hidden md:flex w-full px-5 lg:px-16 items-center gap-5">
         {visible.map((category) => (

@@ -57,7 +57,7 @@ const Feed = ({ initialData }: { initialData: PostsData }) => {
   }, [loadMore]);
 
   return (
-    <div className="w-full mx-auto bg-white rounded-md">
+    <div className="w-full mx-auto bg-card rounded-md">
       {posts.map((post) => (
         <FeedCard key={post.id} post={post} />
       ))}

@@ -16,7 +16,7 @@ export function DashSidebar() {
   return (
     <div
       className={cn(
-        "space-y-4 py-4 flex flex-col h-full bg-white relative z-10 transition-all duration-300",
+        "space-y-4 py-4 flex flex-col h-full bg-card relative z-10 transition-all duration-300",
         isCollapsed ? "w-20" : "w-64",
       )}
     >

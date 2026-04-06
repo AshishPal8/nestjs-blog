@@ -494,10 +494,20 @@ export class PostsService {
         : Promise.resolve([]),
     ]);
 
+    const wordCount = post.description
+      .replace(/<[^>]*>/g, " ")
+      .replace(/\s+/g, " ")
+      .trim()
+      .split(" ")
+      .filter(Boolean).length;
+
+    const readingTime = Math.max(1, Math.ceil(wordCount / 200));
+
     return {
       ...post,
       likesCount: post.likesCount ?? 0,
       commentsCount: post.commentsCount ?? 0,
+      readingTime,
       images,
       categories: categoriesList,
       tags: tagsList,
@@ -585,18 +595,30 @@ export class PostsService {
       if (cat) categoriesByPost.get(pc.postId)!.push(cat);
     }
 
-    return postsList.map((post) => ({
-      ...post,
-      author: authorById.get(post.authorId) ?? null,
-      tags: tagsByPost.get(post.id) ?? [],
-      categories: categoriesByPost.get(post.id) ?? [],
-      images: (post.imageIds ?? [])
-        .map((id) => imageById.get(id))
-        .filter(Boolean),
-      isLiked: likedPostIds.has(post.id),
-      likesCount: post.likesCount ?? 0,
-      commentsCount: post.commentsCount ?? 0,
-    }));
+    return postsList.map((post) => {
+      const wordCount = post.description
+        .replace(/<[^>]*>/g, " ")
+        .replace(/\s+/g, " ")
+        .trim()
+        .split(" ")
+        .filter(Boolean).length;
+
+      const readingTime = Math.max(1, Math.ceil(wordCount / 200));
+
+      return {
+        ...post,
+        author: authorById.get(post.authorId) ?? null,
+        tags: tagsByPost.get(post.id) ?? [],
+        categories: categoriesByPost.get(post.id) ?? [],
+        images: (post.imageIds ?? [])
+          .map((id: any) => imageById.get(id))
+          .filter(Boolean),
+        isLiked: likedPostIds.has(post.id),
+        likesCount: post.likesCount ?? 0,
+        commentsCount: post.commentsCount ?? 0,
+        readingTime,
+      };
+    });
   }
 
   private async findOrCreateTags(tagNames: string[]): Promise<number[]> {

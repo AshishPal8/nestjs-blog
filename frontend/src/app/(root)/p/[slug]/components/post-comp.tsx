@@ -6,10 +6,12 @@ import { CommentsSkeleton } from "@/src/components/skeletons/comment-skeleton";
 import PostHeader from "./post-header";
 import PostImages from "./post-images";
 import Comments from "./comments";
+import ReadingProgress from "@/src/components/post/reading-progress";
 
 const PostComp = ({ post }: { post: Post }) => {
   return (
     <>
+      <ReadingProgress />
       <div className="p-4">
         <PostHeader />
         <div className="flex items-center justify-between mb-2">

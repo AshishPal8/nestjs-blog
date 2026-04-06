@@ -23,11 +23,11 @@ const SearchSkeleton = () => (
     {[1, 2, 3, 4, 5].map((i) => (
       <div key={i} className="p-4 space-y-3">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full bg-gray-100" />
-          <div className="h-3 bg-gray-100 rounded w-24" />
+          <div className="w-8 h-8 rounded-full bg-muted" />
+          <div className="h-3 bg-muted rounded w-24" />
         </div>
-        <div className="h-4 bg-gray-100 rounded w-3/4" />
-        <div className="h-3 bg-gray-100 rounded w-full" />
+        <div className="h-4 bg-muted rounded w-3/4" />
+        <div className="h-3 bg-muted rounded w-full" />
       </div>
     ))}
   </div>
