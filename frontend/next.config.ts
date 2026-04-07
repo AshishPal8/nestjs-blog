@@ -21,6 +21,9 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  experimental: {
+    scrollRestoration: true,
+  },
 };
 
 export default nextConfig;

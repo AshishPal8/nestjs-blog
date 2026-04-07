@@ -33,7 +33,6 @@ export class LoggingInterceptor implements NestInterceptor {
       "unknown";
 
     const ua = req.headers["user-agent"] || "unknown";
-    console.log("ua", ua);
     const device = this.parseDevice(ua);
     const os = this.parseOS(ua);
     const browser = this.parseBrowser(ua);

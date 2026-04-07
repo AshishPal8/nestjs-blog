@@ -300,17 +300,18 @@ uploadFile(file: Upload!)                 # Upload image to ImageKit
 
 ---
 
-## 🤝 Contributing
+<!-- ## 🤝 Contributing
 
 Pull requests are welcome. For major changes, please open an issue first.
 
----
+--- -->
 
+<!--
 ## 📄 License
 
 [MIT](LICENSE)
 
----
+--- -->
 
 <div align="center">
   Made with ❤️ by <a href="https://github.com/AshishPal8">Ashish Pal</a>
