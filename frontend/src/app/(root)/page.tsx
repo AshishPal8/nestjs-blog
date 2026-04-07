@@ -4,15 +4,17 @@ import { GET_POSTS } from "@/src/graphql/queries/posts";
 import { query } from "@/src/lib/apollo-server-client";
 import { PostsData } from "@/src/types/post.types";
 
+export const revalidate = 60;
+
 export default async function Home() {
-  const { data } = await query<PostsData>({
+  const feedData = await query<PostsData>({
     query: GET_POSTS,
     variables: { pagination: { page: 1, limit: 10 } },
   });
 
   return (
     <FeedLayout>
-      <Feed initialData={data} />
+      <Feed initialData={feedData.data} />
     </FeedLayout>
   );
 }
