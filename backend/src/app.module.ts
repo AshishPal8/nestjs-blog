@@ -16,6 +16,7 @@ import { TagsModule } from "@modules/tags/tags.module";
 import { AppController } from "./app.controller";
 import { APP_INTERCEPTOR } from "@nestjs/core";
 import { LoggingInterceptor } from "@common/interceptors/logging.interceptor";
+import { BookmarksModule } from "@modules/bookmarks/bookmarks.module";
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { LoggingInterceptor } from "@common/interceptors/logging.interceptor";
     LikesModule,
     CommentsModule,
     TagsModule,
+    BookmarksModule,
   ],
   controllers: [AppController],
   providers: [

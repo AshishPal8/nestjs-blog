@@ -8,6 +8,7 @@ export interface Post {
   commentsCount: number;
   readingTime: number;
   isLiked: boolean;
+  isBookmarked: boolean;
   createdAt: string;
   updatedAt: string;
   categories: { id: number; name: string; slug: string }[];
