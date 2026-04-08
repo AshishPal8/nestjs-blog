@@ -11,6 +11,7 @@ export const GET_POSTS = gql`
         likesCount
         commentsCount
         isLiked
+        isBookmarked
         readingTime
         createdAt
         updatedAt
@@ -58,6 +59,7 @@ export const GET_POST_BY_SLUG = gql`
       likesCount
       commentsCount
       isLiked
+      isBookmarked
       readingTime
       createdAt
       updatedAt

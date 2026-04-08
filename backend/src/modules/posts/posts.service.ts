@@ -19,6 +19,7 @@ import { PaginationDto, paginationSchema } from "@common/dto/pagination.input";
 import { UpdatePostDto, updatePostSchema } from "./dto/update-post-input";
 import { users } from "@database/schema/user.schema";
 import { likes } from "@database/schema/like.schema";
+import { bookmarks } from "@database/schema/bookmark.schema";
 
 @Injectable()
 export class PostsService {
@@ -446,7 +447,7 @@ export class PostsService {
       throw new NotFoundError("Post not found");
     }
 
-    const [images, postTagsList, postCategoriesList, isLiked] =
+    const [images, postTagsList, postCategoriesList, isLiked, isBookmarked] =
       await Promise.all([
         post.imageIds?.length > 0
           ? db.select().from(uploads).where(inArray(uploads.id, post.imageIds))
@@ -464,6 +465,16 @@ export class PostsService {
               .select()
               .from(likes)
               .where(and(eq(likes.postId, postId), eq(likes.userId, userId)))
+              .limit(1)
+              .then((rows) => rows.length > 0)
+          : Promise.resolve(false),
+        userId
+          ? db
+              .select()
+              .from(bookmarks)
+              .where(
+                and(eq(bookmarks.postId, postId), eq(bookmarks.userId, userId)),
+              )
               .limit(1)
               .then((rows) => rows.length > 0)
           : Promise.resolve(false),
@@ -512,6 +523,7 @@ export class PostsService {
       categories: categoriesList,
       tags: tagsList,
       isLiked,
+      isBookmarked,
     };
   }
 
@@ -526,25 +538,41 @@ export class PostsService {
       ...new Set(postsList.flatMap((p) => p.imageIds ?? [])),
     ];
 
-    const [allPostTags, allPostCategories, allImages, allUserLikes] =
-      await Promise.all([
-        db.select().from(postTags).where(inArray(postTags.postId, postIds)),
-        db
-          .select()
-          .from(postCategories)
-          .where(inArray(postCategories.postId, postIds)),
-        allImageIds.length > 0
-          ? db.select().from(uploads).where(inArray(uploads.id, allImageIds))
-          : Promise.resolve([]),
-        userId
-          ? db
-              .select({ postId: likes.postId })
-              .from(likes)
-              .where(
-                and(inArray(likes.postId, postIds), eq(likes.userId, userId)),
-              )
-          : Promise.resolve([]),
-      ]);
+    const [
+      allPostTags,
+      allPostCategories,
+      allImages,
+      allUserLikes,
+      allUserBookmarks,
+    ] = await Promise.all([
+      db.select().from(postTags).where(inArray(postTags.postId, postIds)),
+      db
+        .select()
+        .from(postCategories)
+        .where(inArray(postCategories.postId, postIds)),
+      allImageIds.length > 0
+        ? db.select().from(uploads).where(inArray(uploads.id, allImageIds))
+        : Promise.resolve([]),
+      userId
+        ? db
+            .select({ postId: likes.postId })
+            .from(likes)
+            .where(
+              and(inArray(likes.postId, postIds), eq(likes.userId, userId)),
+            )
+        : Promise.resolve([]),
+      userId
+        ? db
+            .select({ postId: bookmarks.postId })
+            .from(bookmarks)
+            .where(
+              and(
+                inArray(bookmarks.postId, postIds),
+                eq(bookmarks.userId, userId),
+              ),
+            )
+        : Promise.resolve([]),
+    ]);
 
     const allTagIds = [...new Set(allPostTags.map((pt) => pt.tagId))];
     const allCategoryIds = [
@@ -579,6 +607,7 @@ export class PostsService {
     const imageById = new Map(allImages.map((img) => [img.id, img]));
     const authorById = new Map(allAuthors.map((u) => [u.id, u]));
     const likedPostIds = new Set(allUserLikes.map((l) => l.postId));
+    const bookmarkedPostIds = new Set(allUserBookmarks.map((b) => b.postId));
 
     const tagsByPost = new Map<number, typeof allTags>();
     const categoriesByPost = new Map<number, typeof allCategories>();
@@ -614,6 +643,7 @@ export class PostsService {
           .map((id: any) => imageById.get(id))
           .filter(Boolean),
         isLiked: likedPostIds.has(post.id),
+        isBookmarked: bookmarkedPostIds.has(post.id),
         likesCount: post.likesCount ?? 0,
         commentsCount: post.commentsCount ?? 0,
         readingTime,

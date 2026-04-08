@@ -64,6 +64,13 @@
       "when": 1773973720386,
       "tag": "0008_first_genesis",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1775614026886,
+      "tag": "0009_thin_tag",
+      "breakpoints": true
     }
   ]
 }

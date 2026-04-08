@@ -4,8 +4,6 @@ import { GET_POSTS } from "@/src/graphql/queries/posts";
 import { query } from "@/src/lib/apollo-server-client";
 import { PostsData } from "@/src/types/post.types";
 
-export const revalidate = 60;
-
 export default async function Home() {
   const feedData = await query<PostsData>({
     query: GET_POSTS,

@@ -8,6 +8,7 @@ import { useLoginModal } from "@/src/store/useLoginModal";
 import { useMutation } from "@apollo/client/react";
 import { TOGGLE_LIKE } from "@/src/graphql/mutations/likes";
 import { useRouter } from "next/navigation";
+import { TOGGLE_BOOKMARK } from "@/src/graphql/mutations/bookmarks";
 
 const SocialAction = ({ post }: { post: Post }) => {
   const router = useRouter();
@@ -17,6 +18,9 @@ const SocialAction = ({ post }: { post: Post }) => {
     isLiked: boolean;
     likesCount: number;
   } | null>(null);
+  const [isBookmarked, setIsBookmarked] = useState<boolean>(
+    post?.isBookmarked ?? false,
+  );
 
   const user = useAuthStore((state) => state.user);
   const loginModal = useLoginModal();
@@ -36,6 +40,18 @@ const SocialAction = ({ post }: { post: Post }) => {
     },
   });
 
+  const [toggleBookmark, { loading: bookmarkLoading }] = useMutation(
+    TOGGLE_BOOKMARK,
+    {
+      onCompleted: (data) => {
+        setIsBookmarked(data.toggleBookmark.isBookmarked);
+      },
+      onError: () => {
+        setIsBookmarked(post?.isBookmarked ?? false);
+      },
+    },
+  );
+
   const handleLike = () => {
     if (!user) {
       loginModal.onOpen();
@@ -51,6 +67,14 @@ const SocialAction = ({ post }: { post: Post }) => {
     toggleLike({ variables: { input: { postId: post.id } } });
   };
 
+  const handleBookmark = () => {
+    if (!user) return loginModal.onOpen();
+    if (bookmarkLoading) return;
+
+    setIsBookmarked(!isBookmarked);
+    toggleBookmark({ variables: { postId: post.id } });
+  };
+
   return (
     <div className="flex items-center justify-between mt-3">
       <div className="flex items-center gap-4">
@@ -60,10 +84,10 @@ const SocialAction = ({ post }: { post: Post }) => {
         >
           <Icons.like
             size={24}
-            className={`transition-colors ${
+            className={`transition-all duration-200 transform active:scale-125 ${
               isLiked
                 ? "text-blue-500 fill-blue-500"
-                : "text-gray-400 hover:text-blue-400"
+                : "text-gray-500 group-hover:text-blue-500"
             }`}
           />
           <span
@@ -90,10 +114,14 @@ const SocialAction = ({ post }: { post: Post }) => {
           />
         </div>
       </div>
-      <div>
+      <div onClick={handleBookmark} className="cursor-pointer group">
         <Icons.bookmark
           size={24}
-          className="text-gray-500 hover:text-gray-600 cursor-pointer"
+          className={`transition-all duration-200 transform active:scale-125 ${
+            isBookmarked
+              ? "text-yellow-500 fill-yellow-500"
+              : "text-gray-500 group-hover:text-yellow-500"
+          }`}
         />
       </div>
       <ShareModal open={open} onClose={() => setOpen(false)} slug={post.slug} />

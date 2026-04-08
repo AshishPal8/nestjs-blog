@@ -67,6 +67,9 @@ export class PostOutput {
   @Field({ nullable: true })
   isLiked?: boolean;
 
+  @Field({ nullable: true })
+  isBookmarked?: boolean;
+
   @Field()
   createdAt: Date;
 
