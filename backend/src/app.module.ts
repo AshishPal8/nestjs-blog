@@ -14,12 +14,20 @@ import { LikesModule } from "@modules/likes/likes.module";
 import { CommentsModule } from "@modules/comments/comments.module";
 import { TagsModule } from "@modules/tags/tags.module";
 import { AppController } from "./app.controller";
-import { APP_INTERCEPTOR } from "@nestjs/core";
+import { APP_GUARD, APP_INTERCEPTOR } from "@nestjs/core";
 import { LoggingInterceptor } from "@common/interceptors/logging.interceptor";
 import { BookmarksModule } from "@modules/bookmarks/bookmarks.module";
+import { ThrottlerModule } from "@nestjs/throttler";
+import { GqlThrottlerGuard } from "@common/guards/gql-throttler.guard";
 
 @Module({
   imports: [
+    ThrottlerModule.forRoot([
+      {
+        ttl: 60000,
+        limit: 20,
+      },
+    ]),
     ConfigModule.forRoot<ApolloDriverConfig>({
       isGlobal: true,
     }),
@@ -49,6 +57,10 @@ import { BookmarksModule } from "@modules/bookmarks/bookmarks.module";
   providers: [
     AppResolver,
     { provide: APP_INTERCEPTOR, useClass: LoggingInterceptor },
+    {
+      provide: APP_GUARD,
+      useClass: GqlThrottlerGuard,
+    },
   ],
 })
 export class AppModule implements NestModule {

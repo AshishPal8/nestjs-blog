@@ -16,7 +16,6 @@ const Header = () => {
   const loginModal = useLoginModal();
   const router = useRouter();
   const user = useAuthStore((state) => state.user);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [search, setSearch] = useState("");
 
@@ -67,10 +66,7 @@ const Header = () => {
           <div className="h-10 w-24 bg-gray-100 animate-pulse rounded-md" />
         ) : user ? (
           <div className="items-center gap-2 hidden sm:flex">
-            <UserDropdown
-              isMenuOpen={isMenuOpen}
-              setIsMenuOpen={setIsMenuOpen}
-            />
+            <UserDropdown />
           </div>
         ) : (
           <Button

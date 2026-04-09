@@ -271,13 +271,23 @@ export class PostsService {
 
   async findAll(pagination: PaginationDto, userId?: number) {
     const validated = paginationSchema.parse(pagination);
-    const { page, limit, search, isActive, categorySlug } = validated;
+    const { page, limit, search, isActive, categorySlug, isBookmarked } =
+      validated;
     const offset = (page - 1) * limit;
 
     const filters = [eq(posts.isDeleted, false)];
 
     if (search) filters.push(ilike(posts.title, `%${search}%`));
     if (isActive !== undefined) filters.push(eq(posts.isActive, isActive));
+
+    if (isBookmarked && userId) {
+      const userBookmarks = db
+        .select({ postId: bookmarks.postId })
+        .from(bookmarks)
+        .where(eq(bookmarks.userId, userId));
+
+      filters.push(inArray(posts.id, userBookmarks));
+    }
 
     if (categorySlug) {
       const [category] = await db

@@ -6,6 +6,7 @@ export const paginationSchema = z.object({
   limit: z.number().int().min(1).max(100).default(10),
   search: z.string().optional(),
   categorySlug: z.string().optional(),
+  isBookmarked: z.boolean().optional(),
   isActive: z.boolean().optional(),
 });
 
@@ -24,6 +25,9 @@ export class PaginationInput {
 
   @Field(() => String, { nullable: true })
   categorySlug?: string;
+
+  @Field(() => Boolean, { nullable: true })
+  isBookmarked?: boolean;
 
   @Field(() => Boolean, { nullable: true })
   isActive?: boolean;

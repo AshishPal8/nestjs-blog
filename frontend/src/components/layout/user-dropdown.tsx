@@ -10,16 +10,11 @@ import { Button } from "../ui/button";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { useAuthStore } from "@/src/store/auth-store";
-import { LayoutDashboard, Menu } from "lucide-react";
+import { LayoutDashboard } from "lucide-react";
 import { api } from "@/src/lib/axios";
 import { useRouter } from "next/navigation";
 
-interface UserDropdownProps {
-  isMenuOpen: boolean;
-  setIsMenuOpen: (isOpen: boolean) => void;
-}
-
-function UserDropdown({ isMenuOpen, setIsMenuOpen }: UserDropdownProps) {
+function UserDropdown() {
   const router = useRouter();
   const { user, logout } = useAuthStore();
   const [mounted, setMounted] = React.useState(false);
@@ -62,9 +57,9 @@ function UserDropdown({ isMenuOpen, setIsMenuOpen }: UserDropdownProps) {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            {/* <Link href={`/profile/${user?.name}`} className="cursor-pointer"> */}
-            <DropdownMenuItem>{user?.name}</DropdownMenuItem>
-            {/* </Link> */}
+            <Link href={`/profile`} className="cursor-pointer">
+              <DropdownMenuItem>{user?.name}</DropdownMenuItem>
+            </Link>
             <DropdownMenuItem asChild>
               <Link
                 href="/dashboard"
@@ -85,10 +80,6 @@ function UserDropdown({ isMenuOpen, setIsMenuOpen }: UserDropdownProps) {
           <Link href="/signin">Sign In</Link>
         </Button>
       )}
-
-      {/* <button className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-        <Menu className="h-6 w-6" />
-      </button> */}
     </div>
   );
 }
