@@ -10,7 +10,7 @@ export const GET_ME = gql`
       bio
       location
       website
-      isVerified
+      createdAt
     }
   }
 `;

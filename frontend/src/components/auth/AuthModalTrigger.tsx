@@ -17,8 +17,6 @@ export function AuthModalTrigger() {
     const redirect = searchParams.get("redirect");
     const error = searchParams.get("error");
 
-    console.log("AuthModalTrigger:", { loginRequired, redirect, error });
-
     if (error === "unauthorized") {
       hasTriggered.current = true;
 

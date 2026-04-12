@@ -47,7 +47,6 @@ export default function CreatePostForm({ onClose }: { onClose?: () => void }) {
     },
   );
 
-  console.log("formData", formData);
   const [editorKey, setEditorKey] = useState(0);
   const [images, setImages] = useState<{ url: string; id: number }[]>(
     initialDraft?.images || [],

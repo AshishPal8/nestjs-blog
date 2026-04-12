@@ -1,32 +1,31 @@
-import React from "react";
-import { query } from "@/src/lib/apollo-server-client";
+import { redirect } from "next/navigation";
+import { getClient } from "@/src/lib/apollo-server-client";
 import { GET_ME } from "@/src/graphql/queries/user";
+import ProfileClient from "./components/profile-client";
+import FeedLayout from "@/src/components/shared/FeedLayout";
 
 const ProfilePage = async () => {
+  const client = await getClient();
+
+  let user = null;
+
   try {
-    const { data } = await query({
+    const { data } = await client.query({
       query: GET_ME,
-      context: { fetchOptions: { cache: "no-store" } },
+      fetchPolicy: "no-cache",
     });
-    console.log(data);
-
-    if (!data?.me) {
-      redirect("/login");
-    }
-
-    return (
-      <main className="min-h-screen bg-muted/30">
-        {/* <ProfileClient initialUser={data.me} /> */}
-      </main>
-    );
+    user = data?.me ?? null;
   } catch (error) {
     console.error("Failed to fetch user:", error);
-    return (
-      <div className="p-20 text-center">
-        Failed to load profile. Please try again later.
-      </div>
-    );
   }
+
+  if (!user) redirect("/");
+
+  return (
+    <FeedLayout>
+      <ProfileClient user={user} />
+    </FeedLayout>
+  );
 };
 
 export default ProfilePage;

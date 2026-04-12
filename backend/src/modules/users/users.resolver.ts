@@ -9,7 +9,7 @@ import { UpdateProfileInput } from "./dto/update-profile.input";
 export class UsersResolver {
   constructor(private readonly usersService: UsersService) {}
 
-  @Query(() => UserOutput)
+  @Query(() => UserOutput, { name: "me" })
   @UseGuards(GqlAuthGuard)
   async me(@Context() context: any) {
     return this.usersService.findOne(context.req.user.id);

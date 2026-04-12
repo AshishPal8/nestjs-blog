@@ -537,7 +537,7 @@ export class PostsService {
     };
   }
 
-  private async getPostsWithRelationsBatch(
+  public async getPostsWithRelationsBatch(
     postsList: Awaited<ReturnType<typeof db.select>>["0"][],
     userId?: number,
   ) {

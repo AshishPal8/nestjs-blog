@@ -70,9 +70,6 @@ export const CategoryClient = () => {
       createdAt: format(category.createdAt, "dd-MM-yyyy"),
     })) || [];
 
-  console.log("Columns", columns);
-  console.log("Table Data", tableData);
-
   return (
     <>
       <div className="flex items-center justify-between">

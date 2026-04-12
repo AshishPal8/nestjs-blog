@@ -19,6 +19,7 @@ import { LoggingInterceptor } from "@common/interceptors/logging.interceptor";
 import { BookmarksModule } from "@modules/bookmarks/bookmarks.module";
 import { ThrottlerModule } from "@nestjs/throttler";
 import { GqlThrottlerGuard } from "@common/guards/gql-throttler.guard";
+import { UsersModule } from "@modules/users/user.module";
 
 @Module({
   imports: [
@@ -52,6 +53,7 @@ import { GqlThrottlerGuard } from "@common/guards/gql-throttler.guard";
     CommentsModule,
     TagsModule,
     BookmarksModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [
