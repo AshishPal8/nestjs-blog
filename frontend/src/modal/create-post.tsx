@@ -60,10 +60,12 @@ const CreatePostModal = () => {
 
   return (
     <>
-      <Button onClick={handleCreatePost} className="cursor-pointer">
-        <Icons.plus />
-        <span className="hidden sm:block">Create</span>
-      </Button>
+      {user?.role === "admin" && (
+        <Button onClick={handleCreatePost} className="cursor-pointer">
+          <Icons.plus />
+          <span className="hidden sm:block">Create</span>
+        </Button>
+      )}
 
       {isDesktop ? (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>

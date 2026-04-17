@@ -7,6 +7,6 @@ export const getCookieOptions = (isProduction: boolean): CookieOptions => ({
   secure: isProduction,
   sameSite: isProduction ? "none" : "lax",
   path: "/",
-  domain: ".ashishpal.dev",
+  domain: isProduction ? ".ashishpal.dev" : undefined,
   maxAge: 30 * 24 * 60 * 60 * 1000,
 });
