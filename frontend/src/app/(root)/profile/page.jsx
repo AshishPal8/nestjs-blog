@@ -15,6 +15,8 @@ const ProfilePage = async () => {
       fetchPolicy: "no-cache",
     });
     user = data?.me ?? null;
+
+    console.log("user", user);
   } catch (error) {
     console.error("Failed to fetch user:", error);
   }

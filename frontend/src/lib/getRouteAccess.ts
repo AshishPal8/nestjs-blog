@@ -16,12 +16,13 @@ export const routeAccess: RouteConfig[] = [
   { path: "/signin", type: "guest" },
   { path: "/signup", type: "guest" },
 
+  { path: "/profile", type: "protected" },
   // Protected routes - only for logged-in users
-  { path: "/dashboard", type: "protected" },
-  { path: "/dashboard/categories", type: "protected" },
-  { path: "/dashboard/blogs", type: "protected" },
-  { path: "/dashboard/stories", type: "protected" },
-  { path: "/dashboard/settings", type: "protected" },
+  { path: "/dashboard", type: "admin" },
+  { path: "/dashboard/categories", type: "admin" },
+  { path: "/dashboard/blogs", type: "admin" },
+  { path: "/dashboard/stories", type: "admin" },
+  { path: "/dashboard/settings", type: "admin" },
 ];
 
 export function getRouteType(pathname: string): RouteType {
@@ -29,19 +30,24 @@ export function getRouteType(pathname: string): RouteType {
   if (exactMatch) return exactMatch.type;
 
   // Check for dynamic routes (e.g., /profile/123)
-  const dynamicMatch = routeAccess.find((route) => {
-    if (route.path.includes("[")) {
-      // Convert /profile/[id] to /profile/*
-      const pattern = route.path.replace(/\[.*?\]/g, ".*");
-      const regex = new RegExp(`^${pattern}$`);
-      return regex.test(pathname);
-    }
+  // const dynamicMatch = routeAccess.find((route) => {
+  //   if (route.path.includes("[")) {
+  //     // Convert /profile/[id] to /profile/*
+  //     const pattern = route.path.replace(/\[.*?\]/g, ".*");
+  //     const regex = new RegExp(`^${pattern}$`);
+  //     return regex.test(pathname);
+  //   }
 
-    // Check if pathname starts with route path (for nested routes)
-    return pathname.startsWith(route.path + "/");
-  });
+  //   // Check if pathname starts with route path (for nested routes)
+  //   return pathname.startsWith(route.path + "/");
+  // });
 
-  if (dynamicMatch) return dynamicMatch.type;
+  // if (dynamicMatch) return dynamicMatch.type;
+
+  const prefixMatch = routeAccess.find((route) =>
+    pathname.startsWith(route.path),
+  );
+  if (prefixMatch) return prefixMatch.type;
 
   return "public";
 }

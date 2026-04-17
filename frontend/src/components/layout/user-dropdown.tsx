@@ -13,6 +13,7 @@ import { useAuthStore } from "@/src/store/auth-store";
 import { LayoutDashboard } from "lucide-react";
 import { api } from "@/src/lib/axios";
 import { useRouter } from "next/navigation";
+import { Icons } from "../shared/icons";
 
 function UserDropdown() {
   const router = useRouter();
@@ -57,20 +58,26 @@ function UserDropdown() {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <Link href={`/profile`} className="cursor-pointer">
-              <DropdownMenuItem>{user?.name}</DropdownMenuItem>
+            <Link href={`/profile`}>
+              <DropdownMenuItem className="cursor-pointer">
+                <Icons.user />
+                {user?.name}
+              </DropdownMenuItem>
             </Link>
-            <DropdownMenuItem asChild>
-              <Link
-                href="/dashboard"
-                className="flex items-center cursor-pointer"
-              >
-                <LayoutDashboard className="h-4 w-4 mr-2" />
-                Dashboard
-              </Link>
-            </DropdownMenuItem>
+            {user?.role === "admin" && (
+              <DropdownMenuItem asChild>
+                <Link
+                  href="/dashboard"
+                  className="flex items-center cursor-pointer"
+                >
+                  <LayoutDashboard className="h-4 w-4 mr-2" />
+                  Dashboard
+                </Link>
+              </DropdownMenuItem>
+            )}
 
             <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">
+              <Icons.logout />
               Sign Out
             </DropdownMenuItem>
           </DropdownMenuContent>
