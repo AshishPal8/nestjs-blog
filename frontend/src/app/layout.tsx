@@ -4,6 +4,7 @@ import "./globals.css";
 import ApolloClientProvider from "../providers/apollo-provider";
 import { Suspense } from "react";
 import { HandleAuth } from "../components/auth/HandleAuth";
+import { SessionSync } from "../components/auth/SessionSync";
 import LoginModal from "../modal/login-modal";
 import { AuthModalTrigger } from "../components/auth/AuthModalTrigger";
 import { Toaster } from "sonner";
@@ -92,6 +93,7 @@ export default function RootLayout({
           <ApolloClientProvider>
             <Suspense fallback={null}>
               <HandleAuth />
+              <SessionSync />
               <AuthModalTrigger />
             </Suspense>
             <KeepAlive />
