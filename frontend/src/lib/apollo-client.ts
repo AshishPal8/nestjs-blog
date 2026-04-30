@@ -1,22 +1,34 @@
-import { ApolloClient, HttpLink, InMemoryCache } from "@apollo/client";
-// import { SetContextLink } from "@apollo/client/link/context";
+import { ApolloClient, HttpLink, InMemoryCache, from } from "@apollo/client";
+import { onError } from "@apollo/client/link/error";
+import { useAuthStore } from "../store/auth-store";
+import { useLoginModal } from "../store/useLoginModal";
 
 const httpLink = new HttpLink({
   uri: process.env.NEXT_PUBLIC_GRAPHQL_URL,
   credentials: "include",
 });
 
-// const authLink = new SetContextLink((prevContext, operation) => {
-//   const token = localStorage.getItem("token");
-//   return {
-//     headers: {
-//       ...prevContext.headers,
-//       authorization: token ? `Bearer ${token}` : "",
-//     },
-//   };
-// });
+const errorLink = onError(({ graphQLErrors, networkError }) => {
+  if (graphQLErrors) {
+    for (const err of graphQLErrors) {
+      const isUnauthorized =
+        err.extensions?.code === "UNAUTHENTICATED" ||
+        err.message === "Unauthorized" ||
+        (err.extensions?.originalError as any)?.statusCode === 401;
+
+      if (isUnauthorized) {
+        useAuthStore.getState().logout();
+        useLoginModal.getState().onOpen();
+      }
+    }
+  }
+  if (networkError && (networkError as any).statusCode === 401) {
+    useAuthStore.getState().logout();
+    useLoginModal.getState().onOpen();
+  }
+});
 
 export const client = new ApolloClient({
-  link: httpLink,
+  link: from([errorLink, httpLink]),
   cache: new InMemoryCache(),
 });
