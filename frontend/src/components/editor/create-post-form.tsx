@@ -6,6 +6,7 @@ import { ImageUpload } from "./image-upload";
 import { PostEditor } from "./tiptap-editor";
 import { TagInput } from "../ui/tag-input";
 import { CREATE_POST } from "@/src/graphql/mutations/posts";
+import { UPDATE_POST } from "@/src/graphql/mutations/posts";
 import { useMutation, useQuery } from "@apollo/client/react";
 import { toast } from "sonner";
 import { handleGraphqlError } from "@/src/lib/errors/handleGraphqlErrors";
@@ -13,10 +14,28 @@ import { Button } from "../ui/button";
 import { MultiSelect } from "../ui/multi-select";
 import { GET_ACTIVE_CATEGORIES } from "@/src/graphql/queries/categories";
 import { Icons } from "../shared/icons";
+import { useRouter } from "next/navigation";
 
 const DRAFT_KEY = "create-post-draft";
 
-export default function CreatePostForm({ onClose }: { onClose?: () => void }) {
+interface InitialPostData {
+  id: number;
+  title: string;
+  description: string;
+  tags: string[];
+  categoryIds: number[];
+  images: { url: string; id: number }[];
+}
+
+interface CreatePostFormProps {
+  onClose?: () => void;
+  initialData?: InitialPostData | null;
+}
+
+export default function CreatePostForm({ onClose, initialData }: CreatePostFormProps) {
+  const router = useRouter();
+  const isEditMode = !!initialData;
+
   const getMetaDescription = (html: string): string => {
     const text = html
       .replace(/<[^>]*>/g, " ")
@@ -26,8 +45,7 @@ export default function CreatePostForm({ onClose }: { onClose?: () => void }) {
   };
 
   const getInitialDraft = () => {
-    if (typeof window === "undefined") return null;
-
+    if (isEditMode || typeof window === "undefined") return null;
     try {
       const saved = localStorage.getItem(DRAFT_KEY);
       return saved ? JSON.parse(saved) : null;
@@ -39,24 +57,31 @@ export default function CreatePostForm({ onClose }: { onClose?: () => void }) {
   const initialDraft = getInitialDraft();
 
   const [formData, setFormData] = useState(
-    initialDraft?.formData || {
-      title: "",
-      description: "",
-      categoryIds: [] as number[],
-      tags: [] as string[],
-    },
+    initialData
+      ? {
+          title: initialData.title,
+          description: initialData.description,
+          categoryIds: initialData.categoryIds,
+          tags: initialData.tags,
+        }
+      : initialDraft?.formData || {
+          title: "",
+          description: "",
+          categoryIds: [] as number[],
+          tags: [] as string[],
+        },
   );
 
   const [editorKey, setEditorKey] = useState(0);
   const [images, setImages] = useState<{ url: string; id: number }[]>(
-    initialDraft?.images || [],
+    initialData?.images ?? initialDraft?.images ?? [],
   );
   const [imageIds, setImageIds] = useState<number[]>(
-    initialDraft?.imageIds || [],
+    initialData?.images.map((img) => img.id) ?? initialDraft?.imageIds ?? [],
   );
   const [draftSaved, setDraftSaved] = useState(false);
   const [hasDraft, setHasDraft] = useState(() => {
-    if (typeof window === "undefined") return false;
+    if (isEditMode || typeof window === "undefined") return false;
     return !!localStorage.getItem(DRAFT_KEY);
   });
 
@@ -70,7 +95,7 @@ export default function CreatePostForm({ onClose }: { onClose?: () => void }) {
     }),
   );
 
-  const [createPost, { loading }] = useMutation(CREATE_POST, {
+  const [createPost, { loading: createLoading }] = useMutation(CREATE_POST, {
     onCompleted: () => {
       toast.success("Post created successfully");
       localStorage.removeItem(DRAFT_KEY);
@@ -79,6 +104,17 @@ export default function CreatePostForm({ onClose }: { onClose?: () => void }) {
     },
     onError: handleGraphqlError,
   });
+
+  const [updatePost, { loading: updateLoading }] = useMutation(UPDATE_POST, {
+    onCompleted: () => {
+      toast.success("Post updated successfully");
+      router.push("/dashboard/blogs");
+      router.refresh();
+    },
+    onError: handleGraphqlError,
+  });
+
+  const loading = createLoading || updateLoading;
 
   const resetForm = () => {
     setFormData({
@@ -95,6 +131,7 @@ export default function CreatePostForm({ onClose }: { onClose?: () => void }) {
   };
 
   useEffect(() => {
+    if (isEditMode) return;
     if (isFirstLoad.current) {
       isFirstLoad.current = false;
       return;
@@ -112,7 +149,7 @@ export default function CreatePostForm({ onClose }: { onClose?: () => void }) {
     }, 600);
 
     return () => clearTimeout(handler);
-  }, [formData, images, imageIds]);
+  }, [formData, images, imageIds, isEditMode]);
 
   const handleAddImage = (url: string, id: number) => {
     setImages((prev) => [...prev, { url, id }]);
@@ -127,36 +164,54 @@ export default function CreatePostForm({ onClose }: { onClose?: () => void }) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    createPost({
-      variables: {
-        input: {
-          title: formData.title,
-          description: formData.description,
-          metaDescription: getMetaDescription(formData.description),
-          categoryIds: formData.categoryIds,
-          tags: formData.tags,
-          imageIds: imageIds,
+    if (isEditMode) {
+      updatePost({
+        variables: {
+          id: initialData!.id,
+          input: {
+            title: formData.title,
+            description: formData.description,
+            metaDescription: getMetaDescription(formData.description),
+            categoryIds: formData.categoryIds,
+            tags: formData.tags,
+            imageIds: imageIds,
+          },
         },
-      },
-    });
+      });
+    } else {
+      createPost({
+        variables: {
+          input: {
+            title: formData.title,
+            description: formData.description,
+            metaDescription: getMetaDescription(formData.description),
+            categoryIds: formData.categoryIds,
+            tags: formData.tags,
+            imageIds: imageIds,
+          },
+        },
+      });
+    }
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6 relative">
-      <div className="absolute right-0 -top-6 flex items-center gap-3">
-        <span className="text-xs text-muted-foreground">
-          {draftSaved ? "Saving..." : ""}
-        </span>
-        {hasDraft && (
-          <button
-            type="button"
-            onClick={resetForm}
-            className="text-xs text-primary hover:text-primary/80 transition-colors"
-          >
-            Clear draft
-          </button>
-        )}
-      </div>
+      {!isEditMode && (
+        <div className="absolute right-0 -top-6 flex items-center gap-3">
+          <span className="text-xs text-muted-foreground">
+            {draftSaved ? "Saving..." : ""}
+          </span>
+          {hasDraft && (
+            <button
+              type="button"
+              onClick={resetForm}
+              className="text-xs text-primary hover:text-primary/80 transition-colors"
+            >
+              Clear draft
+            </button>
+          )}
+        </div>
+      )}
       <MultiSelect
         options={categoryOptions}
         value={formData.categoryIds.map(String)}
@@ -203,10 +258,18 @@ export default function CreatePostForm({ onClose }: { onClose?: () => void }) {
       <Button type="submit" disabled={loading}>
         {loading ? (
           <Icons.loader className="h-4 w-4 animate-spin" />
+        ) : isEditMode ? (
+          <Icons.check className="h-4 w-4" />
         ) : (
           <Icons.plus className="h-4 w-4" />
         )}
-        {loading ? "Creating..." : "Create Post"}
+        {loading
+          ? isEditMode
+            ? "Updating..."
+            : "Creating..."
+          : isEditMode
+          ? "Update Post"
+          : "Create Post"}
       </Button>
     </form>
   );

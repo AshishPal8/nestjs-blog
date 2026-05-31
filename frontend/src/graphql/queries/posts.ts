@@ -12,6 +12,7 @@ export const GET_POSTS = gql`
         commentsCount
         isLiked
         isBookmarked
+        isActive
         readingTime
         createdAt
         updatedAt
@@ -82,6 +83,38 @@ export const GET_POST_BY_SLUG = gql`
         id
         url
       }
+    }
+  }
+`;
+
+export const GET_POST_BY_ID = gql`
+  query GetPostById($id: Int!) {
+    post(id: $id) {
+      id
+      title
+      description
+      isActive
+      tags {
+        id
+        name
+      }
+      categories {
+        id
+        name
+      }
+      images {
+        id
+        url
+      }
+    }
+  }
+`;
+
+export const DELETE_POST = gql`
+  mutation DeletePost($id: Int!) {
+    deletePost(id: $id) {
+      success
+      message
     }
   }
 `;
