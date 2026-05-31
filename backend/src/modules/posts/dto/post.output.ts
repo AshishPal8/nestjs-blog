@@ -70,6 +70,9 @@ export class PostOutput {
   @Field({ nullable: true })
   isBookmarked?: boolean;
 
+  @Field({ nullable: true })
+  isActive?: boolean;
+
   @Field()
   createdAt: Date;
 

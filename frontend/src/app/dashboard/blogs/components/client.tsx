@@ -1,23 +1,23 @@
 "use client";
 
+import React, { useEffect } from "react";
 import { Plus } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import { Button } from "@/src/components/ui/button";
 import { Heading } from "@/src/components/ui/heading";
 import { Separator } from "@/src/components/ui/separator";
-import { CategoryColumn, columns } from "./columns";
-import React, { useEffect } from "react";
+import { PostColumn, columns } from "./columns";
 import DataTable from "@/src/components/ui/data-table";
 import Pagination from "@/src/components/shared/pagination";
-import CategoryFilters from "./category-filters";
 import { useQuery } from "@apollo/client/react";
-import { GET_CATEGORIES } from "@/src/graphql/queries/categories";
 import { format } from "date-fns";
+import { GET_POSTS } from "@/src/graphql/queries/posts";
+import PostFilters from "./post-filters";
 
-interface CategoriesResponse {
-  categories: {
-    data: CategoryColumn[];
+interface PostResponse {
+  posts: {
+    data: PostColumn[];
     meta: {
       total: number;
       page: number;
@@ -36,23 +36,18 @@ export const PostClient = () => {
   const limit = parseInt(searchParams.get("limit") || "10");
   const search = searchParams.get("search") || "";
 
-  const { data, loading, refetch, error } = useQuery<CategoriesResponse>(
-    GET_CATEGORIES,
-    {
-      variables: {
-        paginationInput: {
-          page,
-          limit,
-          search: search || undefined,
-        },
-      },
-      fetchPolicy: "network-only",
+  const { data, loading, refetch, error } = useQuery<PostResponse>(GET_POSTS, {
+    variables: {
+      pagination: { page, limit, search: search || undefined },
     },
-  );
+    fetchPolicy: "network-only",
+  });
+
+  console.log({ data });
 
   useEffect(() => {
     refetch({
-      paginationInput: {
+      pagination: {
         page,
         limit,
         search: search || undefined,
@@ -60,30 +55,30 @@ export const PostClient = () => {
     });
   }, [page, limit, search, refetch]);
 
-  const tableData: CategoryColumn[] =
-    data?.categories.data.map((category) => ({
-      id: category.id,
-      name: category.name,
-      slug: category.slug,
-      description: category.description || "",
-      isActive: category.isActive || false,
-      createdAt: format(category.createdAt, "dd-MM-yyyy"),
+  const tableData: PostColumn[] =
+    data?.posts.data.map((post) => ({
+      id: post.id,
+      title: post.title,
+      likesCount: post.likesCount,
+      commentsCount: post.commentsCount,
+      isActive: post.isActive || false,
+      createdAt: format(post.createdAt, "dd-MM-yyyy"),
     })) || [];
 
   return (
     <>
       <div className="flex items-center justify-between">
         <Heading
-          title={`Category (${data?.categories.meta?.total})`}
-          description="Manage categories of blogs"
+          title={`Blogs (${data?.posts.meta?.total ?? 0})`}
+          description="Manage blogs"
         />
-        <Button onClick={() => router.push(`/dashboard/categories/new`)}>
+        <Button onClick={() => router.push(`/dashboard/blogs/new`)}>
           <Plus className="mr-2 h-4 w-4" />
           Add New
         </Button>
       </div>
       <Separator />
-      <CategoryFilters />
+      <PostFilters />
       {loading && (
         <div className="flex items-center justify-center py-10">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
@@ -91,19 +86,17 @@ export const PostClient = () => {
       )}
       {error && (
         <div className="flex items-center justify-center py-10">
-          <p className="text-red-500">
-            Error loading categories: {error.message}
-          </p>
+          <p className="text-red-500">Error loading blogs: {error.message}</p>
         </div>
       )}
 
       {!loading && !error && (
         <>
           <DataTable columns={columns} data={tableData} />
-          {data?.categories.meta && (
+          {data?.posts.meta && (
             <Pagination
-              currentPage={data.categories.meta.page}
-              totalPages={data.categories.meta.totalPages}
+              currentPage={data.posts.meta.page}
+              totalPages={data.posts.meta.totalPages}
             />
           )}
         </>

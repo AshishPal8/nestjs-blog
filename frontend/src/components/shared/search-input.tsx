@@ -34,7 +34,7 @@ const SearchInput = () => {
   return (
     <div className="w-full">
       <Input
-        placeholder="Search with category name"
+        placeholder="Search..."
         className="w-full md:w-[30%]"
         value={searchValue}
         onChange={(e) => setSearchValue(e.target.value)}
