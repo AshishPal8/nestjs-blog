@@ -14,7 +14,7 @@ import { PaginationInput } from "@common/dto/pagination.input";
 export class CategoriesResolver {
   constructor(private categoriesService: CategoriesService) {}
 
-  @Query(() => [CategoryOutput], { name: "categories" })
+  @Query(() => [CategoryOutput], { name: "allCategories" })
   async getCategories() {
     return this.categoriesService.findAll();
   }

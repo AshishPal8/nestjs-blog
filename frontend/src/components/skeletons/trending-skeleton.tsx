@@ -1,5 +1,5 @@
 export const TrendingSkeleton = () => (
-  <div className="sticky top-[150px] left-1/2 translate-x-1/2 space-y-4 w-[300px] p-2 rounded-md">
+  <div className="sticky top-[150px] w-[300px] h-fit space-y-4 bg-card p-2 rounded-md">
     <div className="h-3 bg-muted-foreground/20 rounded w-20 animate-pulse" />
     {/* <div className="w-14 h-14 bg-muted-foreground/10 rounded-md shrink-0" /> */}
     {[1, 2, 3, 4, 5].map((i) => (

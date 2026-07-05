@@ -20,7 +20,7 @@ const TrendingSidebar = async () => {
   if (posts.length === 0) return null;
 
   return (
-    <div className="sticky top-[150px] left-1/2 translate-x-1/2 space-y-4 w-[300px] bg-card p-2 rounded-md">
+    <div className="sticky top-[150px] w-[300px] h-fit space-y-4 bg-card p-2 rounded-md">
       <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-1">
         Trending
       </h2>

@@ -30,7 +30,7 @@ const ProfileCard = () => {
   }
 
   return (
-    <Card className="sticky top-[150px] right-1/2 translate-x-1/2 space-y-4 w-[300px] bg-card p-2 rounded-md">
+    <Card className="sticky top-[150px] w-[300px] h-fit space-y-4 bg-card p-2 rounded-md">
       <CardHeader className="flex flex-col items-center gap-2 pb-2">
         <div className="relative p-1 rounded-full bg-linear-to-tr from-blue-600 via-indigo-500 to-purple-600 shadow-md">
           <Avatar className="w-24 h-24 border-4 border-card">
@@ -67,7 +67,7 @@ const ProfileCard = () => {
 };
 
 const ProfileSkeleton = () => (
-  <Card className="sticky top-[150px] right-1/2 translate-x-1/2 space-y-4 w-[300px] bg-card p-2 rounded-md">
+  <div className="sticky top-[150px] w-[300px] h-fit space-y-4 bg-card p-2 rounded-md">
     <CardHeader className="flex flex-col items-center gap-4">
       <div className="w-24 h-24 rounded-full bg-muted animate-pulse" />
       <div className="space-y-2 w-full flex flex-col items-center">
@@ -84,7 +84,7 @@ const ProfileSkeleton = () => (
     <CardFooter>
       <div className="h-11 w-full bg-muted animate-pulse rounded-xl" />
     </CardFooter>
-  </Card>
+  </div>
 );
 
 export default ProfileCard;
