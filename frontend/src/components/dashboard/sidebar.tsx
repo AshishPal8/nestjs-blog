@@ -5,13 +5,28 @@ import { Button } from "../ui/button";
 import { ScrollArea } from "../ui/scroll-area";
 import { LogOut, SquareChevronLeft, SquareChevronRight } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { dashRoutes } from "@/src/lib/data/dash-sidebar";
 import { useState } from "react";
+import { useAuthStore } from "@/src/store/auth-store";
+import { api } from "@/src/lib/axios";
 
 export function DashSidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+  const { logout } = useAuthStore();
   const [isCollapsed, setIsCollapsed] = useState(false);
+
+  const handleLogout = async () => {
+    try {
+      await api.post("/auth/logout");
+    } catch {
+      // ignore — clear client state regardless
+    } finally {
+      logout();
+      router.push("/");
+    }
+  };
 
   return (
     <div
@@ -89,6 +104,7 @@ export function DashSidebar() {
             isCollapsed ? "justify-center px-2" : "justify-start",
           )}
           title={isCollapsed ? "Logout" : undefined}
+          onClick={handleLogout}
         >
           <LogOut className={cn("h-5 w-5", !isCollapsed && "mr-3")} />
           {!isCollapsed && <span>Logout</span>}
