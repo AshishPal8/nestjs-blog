@@ -9,6 +9,8 @@ import CoinIcon from "./icons/coin.png";
 import FlameIcon from "./icons/flames.png";
 import LikeAnimation from "./icons/like.svg";
 import SaveAnimation from "./icons/save.svg";
+import DarkLogo from "./images/dark_logo.png";
+import LightLogo from "./images/light_logo.png";
 
 export {
   Google,
@@ -22,4 +24,6 @@ export {
   FlameIcon,
   LikeAnimation,
   SaveAnimation,
+  DarkLogo,
+  LightLogo,
 };
