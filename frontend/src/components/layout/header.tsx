@@ -8,11 +8,11 @@ import UserDropdown from "./user-dropdown";
 import { useEffect, useState } from "react";
 import MobileMenu from "./mobile-menu";
 import CreatePostModal from "@/src/modal/create-post";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import ThemeToggle from "../shared/theme-toggle";
 import StreakBadge from "./streak-badge";
 import DailyActivityPing from "../shared/daily-activity-ping";
+import Logo from "../shared/logo";
 
 const Header = () => {
   const loginModal = useLoginModal();
@@ -38,10 +38,7 @@ const Header = () => {
     <div className="w-full px-0 sm:px-5 md:px-10 lg:px-16 py-3 flex items-center justify-between border-b border-border bg-background">
       <div className="flex items-center justify-between gap-4 sm:gap-8">
         <MobileMenu />
-        <Link href="/">
-          <h1 className="text-2xl font-bold hidden sm:block">Blogapp</h1>
-          <h1 className="text-2xl font-bold sm:hidden">B</h1>
-        </Link>
+        <Logo />
         <div className="relative">
           <Icons.search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
           <Input
