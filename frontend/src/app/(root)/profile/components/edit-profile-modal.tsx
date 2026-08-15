@@ -19,10 +19,12 @@ const EditProfileModal = ({
   user,
   open,
   onClose,
+  onUpdated,
 }: {
   user: UserProfile;
   open: boolean;
   onClose: () => void;
+  onUpdated: (patch: Partial<UserProfile>) => void;
 }) => {
   const setUser = useAuthStore((s) => s.setUser);
   const [form, setForm] = useState({
@@ -33,6 +35,7 @@ const EditProfileModal = ({
 
   const [updateProfile, { loading }] = useMutation(UPDATE_PROFILE, {
     onCompleted: (data) => {
+      onUpdated(data.updateProfile);
       setUser(data.updateProfile);
       toast.success("Profile updated");
       onClose();

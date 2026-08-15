@@ -3,9 +3,13 @@ import { likes } from "@database/schema/like.schema";
 import { posts } from "@database/schema/posts.schema";
 import { Injectable } from "@nestjs/common";
 import { and, eq, sql } from "drizzle-orm";
+import { ActivityService } from "@modules/activity/activity.service";
+import { ACTIVITY_POINTS } from "@modules/activity/points.config";
 
 @Injectable()
 export class LikesService {
+  constructor(private readonly activityService: ActivityService) {}
+
   async toggle(postId: number, userId: number) {
     const [existing] = await db
       .select()
@@ -37,6 +41,21 @@ export class LikesService {
         })
         .where(eq(posts.id, postId))
         .returning({ likesCount: posts.likesCount });
+
+      const alreadyAwarded = await this.activityService.hasRecordedActivity(
+        userId,
+        "like_given",
+        { refType: "post", refId: postId },
+      );
+
+      if (!alreadyAwarded) {
+        await this.activityService.recordActivity(
+          userId,
+          "like_given",
+          ACTIVITY_POINTS["like_given"],
+          { refType: "post", refId: postId },
+        );
+      }
 
       return { postId, likesCount: post.likesCount ?? 0, isLiked: true };
     }

@@ -41,7 +41,13 @@ function PostDescription({ html, slug }: { html: string; slug: string }) {
   );
 }
 
-const FeedCard = ({ post }: { post: Post }) => {
+const FeedCard = ({
+  post,
+  onBookmarkChange,
+}: {
+  post: Post;
+  onBookmarkChange?: (postId: number, isBookmarked: boolean) => void;
+}) => {
   const [lightbox, setLightbox] = useState<{ open: boolean; index: number }>({
     open: false,
     index: 0,
@@ -87,7 +93,7 @@ const FeedCard = ({ post }: { post: Post }) => {
               </div>
             ))}
         </div>
-        <SocialAction post={post} />
+        <SocialAction post={post} onBookmarkChange={onBookmarkChange} />
       </div>
 
       <ImageLightbox

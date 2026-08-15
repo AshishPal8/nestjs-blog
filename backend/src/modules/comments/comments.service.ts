@@ -15,9 +15,13 @@ import {
   ForbiddenError,
   NotFoundError,
 } from "@common/responses/custom-response";
+import { ActivityService } from "@modules/activity/activity.service";
+import { ACTIVITY_POINTS } from "@modules/activity/points.config";
 
 @Injectable()
 export class CommentsService {
+  constructor(private readonly activityService: ActivityService) {}
+
   private async getCommentWithAuthor(commentId: number) {
     const [result] = await db
       .select({
@@ -139,6 +143,13 @@ export class CommentsService {
       .update(posts)
       .set({ commentsCount: sql`COALESCE(${posts.commentsCount}, 0) + 1` })
       .where(eq(posts.id, validated.postId));
+
+    await this.activityService.recordActivity(
+      authorId,
+      "comment_created",
+      ACTIVITY_POINTS["comment_created"],
+      { refType: "comment", refId: comment.id },
+    );
 
     return this.getCommentWithAuthor(comment.id);
   }

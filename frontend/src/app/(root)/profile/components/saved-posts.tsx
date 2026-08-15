@@ -1,10 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import { useQuery } from "@apollo/client/react";
 import { GET_MY_BOOKMARKS } from "@/src/graphql/queries/bookmarks";
 import FeedCard from "@/src/components/home/feed-card";
 import { Bookmark } from "lucide-react";
 import { Post } from "@/src/types/post.types";
+import { cn } from "@/src/lib/utils";
 
 interface BookmarksData {
   myBookmarks: {
@@ -16,13 +18,35 @@ interface BookmarksData {
   };
 }
 
+const REMOVE_ANIMATION_MS = 300;
+
 const SavedPosts = () => {
   const { data, loading } = useQuery<BookmarksData>(GET_MY_BOOKMARKS, {
     variables: { pagination: { page: 1, limit: 20 } },
     fetchPolicy: "cache-and-network",
   });
 
-  const posts = data?.myBookmarks?.data ?? [];
+  const [removedIds, setRemovedIds] = useState<Set<number>>(new Set());
+  const [removingIds, setRemovingIds] = useState<Set<number>>(new Set());
+
+  const posts = (data?.myBookmarks?.data ?? []).filter(
+    (post) => !removedIds.has(post.id),
+  );
+
+  const handleBookmarkChange = (postId: number, isBookmarked: boolean) => {
+    if (isBookmarked) return;
+
+    setRemovingIds((prev) => new Set(prev).add(postId));
+
+    setTimeout(() => {
+      setRemovedIds((prev) => new Set(prev).add(postId));
+      setRemovingIds((prev) => {
+        const next = new Set(prev);
+        next.delete(postId);
+        return next;
+      });
+    }, REMOVE_ANIMATION_MS);
+  };
 
   if (loading && posts.length === 0) {
     return (
@@ -56,7 +80,19 @@ const SavedPosts = () => {
   return (
     <div className="divide-y">
       {posts.map((post) => (
-        <FeedCard key={post.id} post={post} /> // ✅ properly typed now
+        <div
+          key={post.id}
+          className={cn(
+            "grid transition-all duration-300 ease-in-out",
+            removingIds.has(post.id)
+              ? "grid-rows-[0fr] opacity-0"
+              : "grid-rows-[1fr] opacity-100",
+          )}
+        >
+          <div className="overflow-hidden">
+            <FeedCard post={post} onBookmarkChange={handleBookmarkChange} />
+          </div>
+        </div>
       ))}
     </div>
   );

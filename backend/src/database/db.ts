@@ -5,6 +5,8 @@ import * as userSchema from "./schema/user.schema";
 import * as postsSchema from "./schema/posts.schema";
 import * as tagsSchema from "./schema/tags.schema";
 import * as postTagsSchema from "./schema/post-tags.schema";
+import * as activitySchema from "./schema/activity.schema";
+import * as userStatsSchema from "./schema/user-stats.schema";
 
 import { envConfig } from "src/config/env.config";
 
@@ -17,5 +19,7 @@ export const db = drizzle(client, {
     ...postsSchema,
     ...tagsSchema,
     ...postTagsSchema,
+    ...activitySchema,
+    ...userStatsSchema,
   },
 });
