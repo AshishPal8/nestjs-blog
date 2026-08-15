@@ -9,8 +9,16 @@ import { useMutation } from "@apollo/client/react";
 import { TOGGLE_LIKE } from "@/src/graphql/mutations/likes";
 import { useRouter } from "next/navigation";
 import { TOGGLE_BOOKMARK } from "@/src/graphql/mutations/bookmarks";
+import { LikeAnimation, SaveAnimation } from "@/src/assets";
+import ReactionButton from "./reaction-button";
 
-const SocialAction = ({ post }: { post: Post }) => {
+const SocialAction = ({
+  post,
+  onBookmarkChange,
+}: {
+  post: Post;
+  onBookmarkChange?: (postId: number, isBookmarked: boolean) => void;
+}) => {
   const router = useRouter();
   const [open, setOpen] = useState(false);
 
@@ -45,6 +53,7 @@ const SocialAction = ({ post }: { post: Post }) => {
     {
       onCompleted: (data) => {
         setIsBookmarked(data.toggleBookmark.isBookmarked);
+        onBookmarkChange?.(post.id, data.toggleBookmark.isBookmarked);
       },
       onError: () => {
         setIsBookmarked(post?.isBookmarked ?? false);
@@ -78,20 +87,20 @@ const SocialAction = ({ post }: { post: Post }) => {
   return (
     <div className="flex items-center justify-between mt-3">
       <div className="flex items-center gap-4">
-        <div
-          onClick={handleLike}
-          className="flex items-center gap-2 cursor-pointer"
-        >
-          <Icons.like
+        <div className="flex items-center gap-2 group">
+          <ReactionButton
+            icon={Icons.like}
+            active={isLiked}
+            onClick={handleLike}
+            activeClassName="text-red-500 fill-red-500"
+            idleClassName="text-gray-500 group-hover:text-red-500"
+            animationSrc={LikeAnimation}
+            animationDurationMs={900}
             size={24}
-            className={`transition-all duration-200 transform active:scale-125 ${
-              isLiked
-                ? "text-blue-500 fill-blue-500"
-                : "text-gray-500 group-hover:text-blue-500"
-            }`}
           />
           <span
-            className={`text-sm ${isLiked ? "text-blue-500" : "text-gray-400"}`}
+            onClick={handleLike}
+            className={`text-sm cursor-pointer ${isLiked ? "text-red-500" : "text-gray-400"}`}
           >
             {likesCount}
           </span>
@@ -114,14 +123,16 @@ const SocialAction = ({ post }: { post: Post }) => {
           />
         </div>
       </div>
-      <div onClick={handleBookmark} className="cursor-pointer group">
-        <Icons.bookmark
+      <div className="group">
+        <ReactionButton
+          icon={Icons.bookmark}
+          active={isBookmarked}
+          onClick={handleBookmark}
+          activeClassName="text-violet-500 fill-violet-500"
+          idleClassName="text-gray-500 group-hover:text-violet-500"
+          animationSrc={SaveAnimation}
+          animationDurationMs={1700}
           size={24}
-          className={`transition-all duration-200 transform active:scale-125 ${
-            isBookmarked
-              ? "text-yellow-500 fill-yellow-500"
-              : "text-gray-500 group-hover:text-yellow-500"
-          }`}
         />
       </div>
       <ShareModal open={open} onClose={() => setOpen(false)} slug={post.slug} />

@@ -7,8 +7,23 @@ import Image from "next/image";
 import { CalendarDays, Globe, Pencil } from "lucide-react";
 import { timeAgo } from "@/src/lib";
 import EditProfileModal from "./edit-profile-modal";
+import { FlameIcon, CoinIcon } from "@/src/assets";
 
-const ProfileClient = ({ user }: { user: UserProfile }) => {
+interface UserStats {
+  totalPoints: number;
+  currentStreak: number;
+  longestStreak: number;
+  lastActiveDate: string | null;
+}
+
+const ProfileClient = ({
+  user: initialUser,
+  stats,
+}: {
+  user: UserProfile;
+  stats: UserStats | null;
+}) => {
+  const [user, setUser] = useState(initialUser);
   const [activeTab, setActiveTab] = useState<"about" | "saved">("about");
   const [editOpen, setEditOpen] = useState(false);
 
@@ -64,6 +79,35 @@ const ProfileClient = ({ user }: { user: UserProfile }) => {
             Joined {timeAgo(user.createdAt)}
           </span>
         </div>
+
+        {stats && (
+          <div className="flex items-center gap-6 mt-4 pt-4 border-t">
+            <div className="flex items-center gap-1.5">
+              <Image src={FlameIcon} alt="Streak" width={16} height={16} />
+              <span className="font-semibold text-sm">
+                {stats.currentStreak}
+              </span>
+              <span className="text-xs text-muted-foreground">
+                day streak
+              </span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <span className="font-semibold text-sm">
+                {stats.longestStreak}
+              </span>
+              <span className="text-xs text-muted-foreground">
+                longest streak
+              </span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <Image src={CoinIcon} alt="Points" width={16} height={16} />
+              <span className="font-semibold text-sm">
+                {stats.totalPoints}
+              </span>
+              <span className="text-xs text-muted-foreground">points</span>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* ── Tabs ─────────────────────────────────────── */}
@@ -153,6 +197,7 @@ const ProfileClient = ({ user }: { user: UserProfile }) => {
         user={user}
         open={editOpen}
         onClose={() => setEditOpen(false)}
+        onUpdated={(patch) => setUser((prev) => ({ ...prev, ...patch }))}
       />
     </div>
   );

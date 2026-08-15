@@ -11,6 +11,8 @@ import CreatePostModal from "@/src/modal/create-post";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import ThemeToggle from "../shared/theme-toggle";
+import StreakBadge from "./streak-badge";
+import DailyActivityPing from "../shared/daily-activity-ping";
 
 const Header = () => {
   const loginModal = useLoginModal();
@@ -60,12 +62,14 @@ const Header = () => {
         </div>
       </div>
       <div className="items-center gap-2 flex">
+        <DailyActivityPing />
         <ThemeToggle />
         <CreatePostModal />
         {!mounted ? (
           <div className="h-10 w-24 bg-gray-100 animate-pulse rounded-md" />
         ) : user ? (
           <div className="items-center gap-2 hidden sm:flex">
+            <StreakBadge />
             <UserDropdown />
           </div>
         ) : (

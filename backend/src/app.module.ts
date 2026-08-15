@@ -20,6 +20,7 @@ import { BookmarksModule } from "@modules/bookmarks/bookmarks.module";
 import { ThrottlerModule } from "@nestjs/throttler";
 import { GqlThrottlerGuard } from "@common/guards/gql-throttler.guard";
 import { UsersModule } from "@modules/users/user.module";
+import { ActivityModule } from "@modules/activity/activity.module";
 
 @Module({
   imports: [
@@ -54,6 +55,7 @@ import { UsersModule } from "@modules/users/user.module";
     TagsModule,
     BookmarksModule,
     UsersModule,
+    ActivityModule,
   ],
   controllers: [AppController],
   providers: [

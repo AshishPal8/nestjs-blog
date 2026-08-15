@@ -20,10 +20,12 @@ import { UpdatePostDto, updatePostSchema } from "./dto/update-post-input";
 import { users } from "@database/schema/user.schema";
 import { likes } from "@database/schema/like.schema";
 import { bookmarks } from "@database/schema/bookmark.schema";
+import { ActivityService } from "@modules/activity/activity.service";
+import { ACTIVITY_POINTS } from "@modules/activity/points.config";
 
 @Injectable()
 export class PostsService {
-  constructor() {}
+  constructor(private readonly activityService: ActivityService) {}
 
   async create(input: CreatePostDto, authorId: number) {
     const validated = createPostSchema.parse(input);
@@ -105,6 +107,13 @@ export class PostsService {
         })),
       );
     }
+
+    await this.activityService.recordActivity(
+      authorId,
+      "post_created",
+      ACTIVITY_POINTS["post_created"],
+      { refType: "post", refId: post.id },
+    );
 
     return this.getPostWithRelations(post.id);
   }
