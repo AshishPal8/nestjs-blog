@@ -21,6 +21,8 @@ import { ThrottlerModule } from "@nestjs/throttler";
 import { GqlThrottlerGuard } from "@common/guards/gql-throttler.guard";
 import { UsersModule } from "@modules/users/user.module";
 import { ActivityModule } from "@modules/activity/activity.module";
+import { QuizzesModule } from "@modules/quizzes/quizzes.module";
+import { FlashcardsModule } from "@modules/flashcards/flashcards.module";
 
 @Module({
   imports: [
@@ -56,6 +58,8 @@ import { ActivityModule } from "@modules/activity/activity.module";
     BookmarksModule,
     UsersModule,
     ActivityModule,
+    QuizzesModule,
+    FlashcardsModule,
   ],
   controllers: [AppController],
   providers: [

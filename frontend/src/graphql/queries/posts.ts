@@ -49,6 +49,22 @@ export const GET_POSTS = gql`
   }
 `;
 
+export const GET_TRENDING_POSTS = gql`
+  query GetTrendingPosts($limit: Int) {
+    trendingPosts(limit: $limit) {
+      id
+      title
+      slug
+      likesCount
+      commentsCount
+      images {
+        id
+        url
+      }
+    }
+  }
+`;
+
 export const GET_POST_BY_SLUG = gql`
   query GetPostBySlug($slug: String!) {
     postBySlug(slug: $slug) {

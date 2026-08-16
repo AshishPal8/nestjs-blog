@@ -1,18 +1,22 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Post, PostsData } from "@/src/types/post.types";
-import { GET_POSTS } from "@/src/graphql/queries/posts";
+import { Post } from "@/src/types/post.types";
+import { GET_TRENDING_POSTS } from "@/src/graphql/queries/posts";
 import { query } from "@/src/lib/apollo-server-client";
+
+interface TrendingPostsData {
+  trendingPosts: Post[];
+}
 
 const TrendingSidebar = async () => {
   let posts: Post[] = [];
 
   try {
-    const { data } = await query<PostsData>({
-      query: GET_POSTS,
-      variables: { pagination: { page: 1, limit: 5 } },
+    const { data } = await query<TrendingPostsData>({
+      query: GET_TRENDING_POSTS,
+      variables: { limit: 5 },
     });
-    posts = data?.posts?.data ?? [];
+    posts = data?.trendingPosts ?? [];
   } catch {
     return null;
   }

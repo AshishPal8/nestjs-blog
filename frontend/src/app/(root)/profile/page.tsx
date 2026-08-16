@@ -4,11 +4,19 @@ import { GET_ME } from "@/src/graphql/queries/user";
 import { GET_MY_STATS } from "@/src/graphql/queries/activity";
 import ProfileClient from "./components/profile-client";
 import FeedLayout from "@/src/components/shared/FeedLayout";
+import { UserProfile } from "@/src/types/user.types";
+
+interface UserStats {
+  totalPoints: number;
+  currentStreak: number;
+  longestStreak: number;
+  lastActiveDate: string | null;
+}
 
 const ProfilePage = async () => {
   const client = await getClient();
 
-  let user = null;
+  let user: UserProfile | null = null;
 
   try {
     const { data } = await client.query({
@@ -22,7 +30,7 @@ const ProfilePage = async () => {
 
   if (!user) redirect("/");
 
-  let stats = null;
+  let stats: UserStats | null = null;
 
   try {
     const { data } = await client.query({

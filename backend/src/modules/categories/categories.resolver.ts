@@ -9,6 +9,8 @@ import { GqlAuthGuard } from "@modules/auth/guards/gql-auth.guard";
 import { CreateCategoryInput } from "./dto/create-category.input";
 import { UpdateCategoryInput } from "./dto/update-category.input";
 import { PaginationInput } from "@common/dto/pagination.input";
+import { RolesGuard } from "@common/guards/roles.guard";
+import { Roles } from "@common/decorators/roles.decorator";
 
 @Resolver()
 export class CategoriesResolver {
@@ -42,13 +44,15 @@ export class CategoriesResolver {
   }
 
   @Mutation(() => CategoryOutput, { name: "createCategory" })
-  @UseGuards(GqlAuthGuard)
+  @UseGuards(GqlAuthGuard, RolesGuard)
+  @Roles("admin")
   async createCategory(@Args("input") input: CreateCategoryInput) {
     return this.categoriesService.create(input);
   }
 
   @Mutation(() => CategoryOutput, { name: "updateCategory" })
-  @UseGuards(GqlAuthGuard)
+  @UseGuards(GqlAuthGuard, RolesGuard)
+  @Roles("admin")
   async updateCategory(
     @Args("id", { type: () => Int }) id: number,
     @Args("input") input: UpdateCategoryInput,
@@ -57,7 +61,8 @@ export class CategoriesResolver {
   }
 
   @Mutation(() => Boolean, { name: "deleteCategory" })
-  @UseGuards(GqlAuthGuard)
+  @UseGuards(GqlAuthGuard, RolesGuard)
+  @Roles("admin")
   async deleteCategory(@Args("id", { type: () => Int }) id: number) {
     return this.categoriesService.delete(id);
   }
