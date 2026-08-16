@@ -4,9 +4,7 @@
 
 A modern, full-stack blogging platform inspired by Medium and Threads — built with Next.js 15, NestJS, GraphQL, and PostgreSQL.
 
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-nestjs--blog.vercel.app-blue?style=for-the-badge)](https://nestjs-blog.vercel.app)
-[![Backend](https://img.shields.io/badge/API-Render-46E3B7?style=for-the-badge)](https://nestjs-blog-1.onrender.com/graphql)
-[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-nestjs--blog.vercel.app-blue?style=for-the-badge)](https://blog.ashishpal.dev)
 
 <!-- Add a screenshot here -->
 <!-- ![BlogApp Screenshot](./docs/screenshot.png) -->
