@@ -1,0 +1,2 @@
+ALTER TABLE "flashcard_decks" ADD COLUMN "image_id" integer;--> statement-breakpoint
+ALTER TABLE "flashcard_decks" ADD CONSTRAINT "flashcard_decks_image_id_uploads_id_fk" FOREIGN KEY ("image_id") REFERENCES "public"."uploads"("id") ON DELETE no action ON UPDATE no action;

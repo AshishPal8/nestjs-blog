@@ -46,6 +46,16 @@ export class PostsResolver {
     return this.postsService.findBySlug(slug, userId);
   }
 
+  @Query(() => [PostOutput], { name: "trendingPosts" })
+  @UseGuards(GqlOptionalAuthGuard)
+  async getTrendingPosts(
+    @Args("limit", { type: () => Int, nullable: true }) limit: number,
+    @Context() context: any,
+  ) {
+    const userId = context.req.user?.id;
+    return this.postsService.findTrending(limit || 5, userId);
+  }
+
   @Query(() => PaginatedPostsOutput, { name: "myPosts" })
   @UseGuards(GqlAuthGuard)
   async getMyPosts(

@@ -85,6 +85,41 @@
       "when": 1786767063848,
       "tag": "0011_condemned_venus",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1786789722012,
+      "tag": "0012_common_longshot",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1786810049210,
+      "tag": "0013_shiny_loki",
+      "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1786810274688,
+      "tag": "0014_free_madame_hydra",
+      "breakpoints": true
+    },
+    {
+      "idx": 15,
+      "version": "7",
+      "when": 1786810764790,
+      "tag": "0015_public_bucky",
+      "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1786811292873,
+      "tag": "0016_fluffy_martin_li",
+      "breakpoints": true
     }
   ]
 }

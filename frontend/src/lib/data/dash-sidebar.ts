@@ -1,4 +1,11 @@
-import { LayoutDashboard, Tag, FileText, Settings } from "lucide-react";
+import {
+  LayoutDashboard,
+  Tag,
+  FileText,
+  Settings,
+  HelpCircle,
+  Layers,
+} from "lucide-react";
 
 export const dashRoutes = [
   {
@@ -15,6 +22,16 @@ export const dashRoutes = [
     label: "Blogs",
     icon: FileText,
     href: "/dashboard/blogs",
+  },
+  {
+    label: "Quizzes",
+    icon: HelpCircle,
+    href: "/dashboard/quizzes",
+  },
+  {
+    label: "Flashcards",
+    icon: Layers,
+    href: "/dashboard/flashcards",
   },
   {
     label: "Stories",

@@ -21,6 +21,8 @@ export const routeAccess: RouteConfig[] = [
   { path: "/dashboard", type: "admin" },
   { path: "/dashboard/categories", type: "admin" },
   { path: "/dashboard/blogs", type: "admin" },
+  { path: "/dashboard/quizzes", type: "admin" },
+  { path: "/dashboard/flashcards", type: "admin" },
   { path: "/dashboard/stories", type: "admin" },
   { path: "/dashboard/settings", type: "admin" },
 ];

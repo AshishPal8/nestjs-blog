@@ -1,0 +1,1 @@
+ALTER TABLE "users" RENAME COLUMN "udpated_at" TO "updated_at";

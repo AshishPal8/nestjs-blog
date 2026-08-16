@@ -13,6 +13,7 @@ import {
 } from "../ui/dropdown-menu";
 import ImageLightbox from "../shared/image-lightbox";
 import SocialAction from "../shared/social-action";
+import ShareModal from "@/src/modal/share-modal";
 
 function PostDescription({ html, slug }: { html: string; slug: string }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -52,6 +53,7 @@ const FeedCard = ({
     open: false,
     index: 0,
   });
+  const [shareOpen, setShareOpen] = useState(false);
   return (
     <div className="border-b">
       <div className="p-4">
@@ -65,7 +67,9 @@ const FeedCard = ({
               />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem>Share</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setShareOpen(true)}>
+                Share
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
@@ -102,6 +106,11 @@ const FeedCard = ({
         open={lightbox.open}
         initialIndex={lightbox.index}
         onClose={() => setLightbox({ open: false, index: 0 })}
+      />
+      <ShareModal
+        open={shareOpen}
+        onClose={() => setShareOpen(false)}
+        slug={post.slug}
       />
     </div>
   );

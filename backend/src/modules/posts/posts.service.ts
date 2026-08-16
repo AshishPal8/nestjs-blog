@@ -3,7 +3,7 @@ import { CreatePostDto, createPostSchema } from "./dto/create-post.input";
 import { SlugUtil } from "@common/utils/slug.util";
 import { db } from "@database/db";
 import { posts } from "@database/schema/posts.schema";
-import { and, count, desc, eq, ilike, inArray } from "drizzle-orm";
+import { and, count, desc, eq, gte, ilike, inArray, notInArray, sql } from "drizzle-orm";
 import { tags } from "@database/schema/tags.schema";
 import { postTags } from "@database/schema/post-tags.schema";
 import {
@@ -363,6 +363,52 @@ export class PostsService {
         hasPrev: page > 1,
       },
     };
+  }
+
+  async findTrending(limit = 5, userId?: number) {
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+    const engagementScore = sql`(COALESCE(${posts.likesCount}, 0) * 2 + COALESCE(${posts.commentsCount}, 0) * 3)`;
+
+    const recentPosts = await db
+      .select()
+      .from(posts)
+      .where(
+        and(
+          eq(posts.isDeleted, false),
+          eq(posts.isActive, true),
+          gte(posts.createdAt, sevenDaysAgo),
+        ),
+      )
+      .orderBy(desc(engagementScore), desc(posts.createdAt))
+      .limit(limit);
+
+    // Backfill with the most recent posts overall if the last 7 days
+    // don't have enough activity to fill the requested limit.
+    let postsList = recentPosts;
+    if (postsList.length < limit) {
+      const excludeIds = postsList.map((p) => p.id);
+
+      const fallback = await db
+        .select()
+        .from(posts)
+        .where(
+          and(
+            eq(posts.isDeleted, false),
+            eq(posts.isActive, true),
+            excludeIds.length > 0
+              ? notInArray(posts.id, excludeIds)
+              : undefined,
+          ),
+        )
+        .orderBy(desc(posts.createdAt))
+        .limit(limit - postsList.length);
+
+      postsList = [...postsList, ...fallback];
+    }
+
+    return this.getPostsWithRelationsBatch(postsList, userId);
   }
 
   async findByAuthor(authorId: number, pagination: PaginationDto) {
